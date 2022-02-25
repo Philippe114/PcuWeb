@@ -7,10 +7,10 @@ import Media from '../pages/Media.vue';
 import Snackbar from '../pages/Snackbar.vue';
 import Chart from '../pages/Chart.vue';
 import Mailbox from '../pages/Mailbox.vue';
-import Calendar from '../pages/Calendar.vue';
+import Pcu from '../pages/Pcu.vue';
 import Login from '../pages/core/Login.vue';
 import Error from '../pages/core/Error.vue';
-
+import Port from "../pages/Port";
 
 
 Vue.use(Router);
@@ -50,13 +50,13 @@ export default new Router({
       }
     },
     {
-      path: '/calendar',
-      name: 'Calendar',
-      component: Calendar,
+      path: '/Pcu',
+      name: 'Pcu',
+      component: Pcu,
       meta: {
         breadcrumb: [
           { name: 'dashboard', href: 'Dashboard' },
-          { name: 'calendar' }
+          { name: 'PCU' }
         ]
       }
     },
@@ -107,6 +107,17 @@ export default new Router({
       component: Error,
       meta: {
         allowAnonymous: true
+      }
+    },
+    {
+      path: '/Port',
+      name: 'Port',
+      component: Port,
+      meta: {
+        breadcrumb: [
+          { name: 'pcu', href: 'Pcu' },
+          { name: 'Port' }
+        ]
       }
     },
   ]
