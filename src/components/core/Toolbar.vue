@@ -7,8 +7,8 @@
       <v-toolbar-side-icon @click="toggleNavigationBar"></v-toolbar-side-icon>
     <v-spacer></v-spacer>
       <v-toolbar-title>
-      <v-btn  v-if="this.logged === false" @click="dialogLogin=true" flat icon dark large color="white">Login</v-btn>
-        <v-btn  v-else-if="this.logged === true" @click="dialogLogin=true" flat icon dark large color="#7CFC00">Login</v-btn>
+      <v-btn  v-if="this.logged == 0" @click="dialogLogin=true" flat icon dark large color="white">Login</v-btn>
+        <v-btn  v-else-if="this.logged == 1" @click="dialogLogin=true" flat icon dark large color="#7CFC00">Login</v-btn>
       <v-dialog
         v-model="dialogLogin"
         max-width="290"
@@ -82,7 +82,7 @@ export default {
       token: "",
       snackbar_false:false,
       snackbar_true:false,
-      logged:false,
+      logged:0,
 
       rating: null,
       dialog: false,
@@ -198,16 +198,17 @@ export default {
     async savePassword(password) {
       localStorage.setItem("password", password)
       this.token = await Get_token(this.password)
-      this.password=""
       if( this.token.status === 401 ){
-        console.log("mauvais pwd")
         this.snackbar_false = true
-        this.logged = false
+        this.logged = 0
+        localStorage.setItem("logged", this.logged)
       }else{
-        console.log("bon pwd")
         this.snackbar_true = true
-        this.logged = true
+        this.logged = 1
+        localStorage.setItem("logged", this.logged)
+        console.log(localStorage.getItem("logged"))
       }
+      this.password=""
 
     },
     toggleNavigationBar() {
@@ -251,6 +252,11 @@ export default {
       vm.$root.setLanguage(code);
     }
   },
+  async mounted() {
+    this.logged = localStorage.getItem("logged")
+    console.log(this.logged)
+    this.$forceUpdate()
+  }
 }
 </script>
 <style>
