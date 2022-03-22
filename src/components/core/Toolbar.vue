@@ -3,17 +3,87 @@
     dark
     app
     :color="$root.themeColor">
-    <v-toolbar-title>
-      <v-toolbar-side-icon @click="toggleNavigationBar"></v-toolbar-side-icon>
-    </v-toolbar-title>
 
+      <v-toolbar-side-icon @click="toggleNavigationBar"></v-toolbar-side-icon>
+    <v-spacer></v-spacer>
+      <v-toolbar-title>
+      <v-btn  v-if="this.logged === false" @click="dialogLogin=true" flat icon dark large color="white">Login</v-btn>
+        <v-btn  v-else-if="this.logged === true" @click="dialogLogin=true" flat icon dark large color="#7CFC00">Login</v-btn>
+      <v-dialog
+        v-model="dialogLogin"
+        max-width="290"
+      >
+        <v-card>
+          <v-card-title class="headline">Login</v-card-title>
+
+          <v-card-text>
+           Enter Password:
+          <v-text-field small v-model="password">Password</v-text-field>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="green darken-1"
+              flat="flat"
+              @click="dialogLogin = false"
+            >
+              No
+            </v-btn>
+
+            <v-btn
+              color="green darken-1"
+              flat="flat"
+              @click="dialogLogin = false; savePassword(password)"
+            >
+              Yes
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-snackbar
+        color="#D2691E"
+        v-model="snackbar_false"
+      >
+        Wrong password
+          <v-btn
+            color="white"
+            flat
+            x-small
+            @click="snackbar_false = false"
+          >
+            Close
+          </v-btn>
+      </v-snackbar>
+
+      <v-snackbar
+        color="#D2691E"
+        v-model="snackbar_true"
+        :timeout=2000
+      >
+        Connected
+      </v-snackbar>
+
+    </v-toolbar-title>
   </v-toolbar>
 </template>
 <script>
 
+import {Get_token} from "../../API";
+import snackbar from "../../pages/Snackbar";
+
 export default {
   data() {
     return {
+      dialogLogin: false,
+      password: "",
+      token: "",
+      snackbar_false:false,
+      snackbar_true:false,
+      logged:false,
+
       rating: null,
       dialog: false,
       dialogSettings: false,
@@ -21,7 +91,6 @@ export default {
       showPassword: null,
       showPasswordConfirm: null,
       userEmail: null,
-      password: null,
       passwordConfirm: null,
       error: false,
       showResult: false,
@@ -51,56 +120,56 @@ export default {
           click: () => {
             const vm = this;
 
-            vm.$router.push({ name: 'Login' });
+            vm.$router.push({name: 'Login'});
           }
         }
       ],
       notifications:
-      [
-        {
-          title: 'New mail from Adam Joe',
-          color: 'light-blue',
-          icon: 'email',
-          actionAt: '12 min ago',
-          isActive: true,
-          onClick: () => {
-            const vm = this;
+        [
+          {
+            title: 'New mail from Adam Joe',
+            color: 'light-blue',
+            icon: 'email',
+            actionAt: '12 min ago',
+            isActive: true,
+            onClick: () => {
+              const vm = this;
 
-            vm.$router.push({ name: 'Mailbox' });
-          }
-        },
-        {
-          title: 'Scheculed meeting',
-          color: 'red',
-          icon: 'calendar_today',
-          actionAt: '46 min ago',
-          isActive: true,
-          onClick: () => {
-            const vm = this;
+              vm.$router.push({name: 'Mailbox'});
+            }
+          },
+          {
+            title: 'Scheculed meeting',
+            color: 'red',
+            icon: 'calendar_today',
+            actionAt: '46 min ago',
+            isActive: true,
+            onClick: () => {
+              const vm = this;
 
-            vm.$router.push({ name: 'Calendar' });
-          }
-        },
-        {
-          title: 'New mail from Github',
-          color: 'light-blue',
-          icon: 'email',
-          isActive: true,
-          timeLabel: '2 hour ago',
-          onClick: () => {
-            const vm = this;
+              vm.$router.push({name: 'Calendar'});
+            }
+          },
+          {
+            title: 'New mail from Github',
+            color: 'light-blue',
+            icon: 'email',
+            isActive: true,
+            timeLabel: '2 hour ago',
+            onClick: () => {
+              const vm = this;
 
-            vm.$router.push({ name: 'Mailbox' });
+              vm.$router.push({name: 'Mailbox'});
+            }
           }
-        }
-      ],
+        ],
       languages: [
-        { name: 'English', languageCode: 'en', path: require('../../assets/flags/en.png') },
-        { name: 'Turkish', languageCode: 'tr', path: require('../../assets/flags/tr.png') },
-        { name: 'French', languageCode: 'fr', path: require('../../assets/flags/fr.png') },
-        { name: 'German', languageCode: 'de', path: require('../../assets/flags/de.png') },
-        { name: 'Japanese', languageCode: 'ja', path: require('../../assets/flags/ja.png') },
-        { name: 'Simplified Chinese', languageCode: 'ch', path: require('../../assets/flags/ch.png') }
+        {name: 'English', languageCode: 'en', path: require('../../assets/flags/en.png')},
+        {name: 'Turkish', languageCode: 'tr', path: require('../../assets/flags/tr.png')},
+        {name: 'French', languageCode: 'fr', path: require('../../assets/flags/fr.png')},
+        {name: 'German', languageCode: 'de', path: require('../../assets/flags/de.png')},
+        {name: 'Japanese', languageCode: 'ja', path: require('../../assets/flags/ja.png')},
+        {name: 'Simplified Chinese', languageCode: 'ch', path: require('../../assets/flags/ch.png')}
       ]
     }
   },
@@ -109,17 +178,38 @@ export default {
     selectedLanguageFlag() {
       const vm = this;
 
-      switch(vm.$i18n.locale) {
-        case 'en': return require('../../assets/flags/en.png');
-        case 'tr': return require('../../assets/flags/tr.png');
-        case 'fr': return require('../../assets/flags/fr.png');
-        case 'de': return require('../../assets/flags/de.png');
-        case 'ja': return require('../../assets/flags/ja.png');
-        case 'ch': return require('../../assets/flags/ch.png');
+      switch (vm.$i18n.locale) {
+        case 'en':
+          return require('../../assets/flags/en.png');
+        case 'tr':
+          return require('../../assets/flags/tr.png');
+        case 'fr':
+          return require('../../assets/flags/fr.png');
+        case 'de':
+          return require('../../assets/flags/de.png');
+        case 'ja':
+          return require('../../assets/flags/ja.png');
+        case 'ch':
+          return require('../../assets/flags/ch.png');
       }
     }
   },
   methods: {
+    async savePassword(password) {
+      localStorage.setItem("password", password)
+      this.token = await Get_token(this.password)
+      this.password=""
+      if( this.token.status === 401 ){
+        console.log("mauvais pwd")
+        this.snackbar_false = true
+        this.logged = false
+      }else{
+        console.log("bon pwd")
+        this.snackbar_true = true
+        this.logged = true
+      }
+
+    },
     toggleNavigationBar() {
       const vm = this;
 
@@ -160,42 +250,10 @@ export default {
 
       vm.$root.setLanguage(code);
     }
-  }
-};
+  },
+}
 </script>
 <style>
-  .toolbar-menu-item {
-    padding-left: 5px;
-  }
-
-  .selected-language-flag {
-    max-width: 45px;
-  }
-
-  .language-flag {
-    max-width: 40px;
-  }
-
-
-  .languages-list-item {
-    cursor: pointer;
-    margin-top: -2px;
-    margin-left: 1px;
-  }
-
-  .languages-list-item-title {
-    font-size: 16px;
-  }
-
-  .languages-list-item-title:hover {
-    color: #41B883;
-    font-weight: bold;
-  }
-  .language-menu {
-    border-radius: 25px;
-    width: 235px;
-    margin-right: 10px;
-  }
 
 
 </style>

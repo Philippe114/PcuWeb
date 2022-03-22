@@ -2,24 +2,27 @@
   <div>
     <v-container>
       <v-flex xs12 sm3>
-        <v-btn flat icon dark large color="blue">
+        <v-btn @click="ReloadPage()" flat icon dark large color="blue">
           <v-icon>cached</v-icon>
         </v-btn>
+
       </v-flex>
 
-      <v-layout row warp class="square_port" justify-center justify-space-around >
-        <v-col class="column_port">
 
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port0,Port_state[0]);dialogChangePage0 = true" > Port: 0</v-btn>
+
+      <v-layout row warp class="square_port" justify-center justify-space-around >
+        <li class="column_port"  style="list-style-type: none" v-for="item in PortList" :key="item.id" >
+
+          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_state);item.dialogChangePage = true" >{{item.label}}</v-btn>
           <v-dialog
-            v-model="dialogChangePage0"
+            v-model="item.dialogChangePage"
             max-width="290"
           >
           <v-card>
             <v-card-title class="headline">Change page?</v-card-title>
 
             <v-card-text>
-              Do you want to go to the page of port 0?
+              Do you want to go to the page of {{item.label}}?
             </v-card-text>
 
             <v-card-actions>
@@ -28,7 +31,7 @@
               <v-btn
                 color="green darken-1"
                 flat="flat"
-                @click="dialogChangePage0 = false"
+                @click="item.dialogChangePage = false"
               >
                 No
               </v-btn>
@@ -37,7 +40,7 @@
                 color="green darken-1"
                 flat="flat"
                 :to="{ name: 'Port' } "
-                @click="dialogChangePage0 = false"
+                @click="item.dialogChangePage = false"
               >
                 Yes
               </v-btn>
@@ -45,15 +48,22 @@
           </v-card>
           </v-dialog>
 
-          <div class="btn_port" >
-              <v-btn v-if="Port_state[0]==='ON'" color="#7CFC00" class="btn_toggle"  @click="dialog0 = true">{{ Port_state[0] }}
-              </v-btn>
-            <v-btn v-else class="btn_toggle" @click="dialog0 = true">{{ Port_state[0] }}
+          <div class="btn_toggle">
+            <Span class="port_state_span" >Port State:</Span>
+            <v-btn v-if="item.Port_state ==='ON'" color="#7CFC00" class="btn_ON" >{{ item.Port_state }}
+            </v-btn>
+            <v-btn v-else-if="item.Port_state ==='OFF'" color="#FFFFFF" class="btn_OFF"  >{{ item.Port_state }}
+            </v-btn>
+          </div>
+          <div class="btn_toggle">
+            <v-btn color="#7CFC00" class="btn_ON_OFF"  @click.native="item.dialogON = true" >ON
+            </v-btn>
+            <v-btn color="#FFFFFF" class="btn_ON_OFF"  @click.native="item.dialogOFF = true">OFF
             </v-btn>
           </div>
 
           <v-dialog
-            v-model="dialog0"
+            v-model="item.dialogON"
             max-width="290"
           >
             <v-card>
@@ -68,53 +78,16 @@
 
                 <v-btn
                   color="green darken-1"
-                  flat
-                  @click="dialog0 = false"
+                  flat="flat"
+                  @click="item.dialogON = false"
                 >
                   No
                 </v-btn>
 
                 <v-btn
                   color="green darken-1"
-                  flat
-                  @click="dialog0 = false ; Port_state[0] = onClickBtn(Port_state[0]); $root.Change_port_state(Port0,Port_state[0])"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
-
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port1,Port_state[1]);dialogChangePage1 = true" > Port: 1</v-btn>
-          <v-dialog
-            v-model="dialogChangePage1"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
-
-              <v-card-text>
-                Do you want to go to the page of port 1?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage1 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage1 = false"
+                  flat="flat"
+                  @click="item.dialogON = false ; item.Port_state = onClickBtn('OFF'); Change_port_state1(item.label,item.Port_state)"
                 >
                   Yes
                 </v-btn>
@@ -122,89 +95,8 @@
             </v-card>
           </v-dialog>
 
-          <div class="btn_port">
-              <v-btn v-if="Port_state[1]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog1 = true">{{ Port_state[1] }}
-              </v-btn>
-              <v-btn v-else class="btn_toggle"  @click.native="dialog1 = true">{{ Port_state[1] }}
-              </v-btn>
-            </div>
-            <v-dialog
-              v-model="dialog1"
-              max-width="290"
-            >
-              <v-card>
-                <v-card-title class="headline">Change port state?</v-card-title>
-
-                <v-card-text>
-                  Do you want to change the port state?
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-
-                  <v-btn
-                    color="green darken-1"
-                    flat
-                    @click="dialog1 = false"
-                  >
-                    No
-                  </v-btn>
-
-                  <v-btn
-                    color="green darken-1"
-                    flat
-                    @click="dialog1 = false ; Port_state[1] = onClickBtn(Port_state[1]); $root.Change_port_state(Port1,Port_state[1])"
-                  >
-                    Yes
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-        </v-col>
-
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port2,Port_state[2]);dialogChangePage2 = true" > Port: 2</v-btn>
           <v-dialog
-            v-model="dialogChangePage2"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
-
-              <v-card-text>
-                Do you want to go to the page of port 2?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage2 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage2 = false"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <div class="btn_port">
-            <v-btn v-if="Port_state[2]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog2 = true">{{ Port_state[2] }}
-            </v-btn>
-            <v-btn v-else class="btn_toggle"  @click.native="dialog2 = true">{{ Port_state[2] }}
-            </v-btn>
-          </div>
-          <v-dialog
-            v-model="dialog2"
+            v-model="item.dialogOFF"
             max-width="290"
           >
             <v-card>
@@ -219,402 +111,42 @@
 
                 <v-btn
                   color="green darken-1"
-                  flat
-                  @click="dialog2 = false"
+                  flat="flat"
+                  @click="item.dialogOFF = false"
                 >
                   No
                 </v-btn>
 
                 <v-btn
                   color="green darken-1"
-                  flat
-                  @click="dialog2 = false ; Port_state[2] = onClickBtn(Port_state[2]); $root.Change_port_state(Port2,Port_state[2])"
+                  flat="flat"
+                  @click="item.dialogOFF = false ; item.Port_state = onClickBtn('ON'); Change_port_state1(item.label,item.Port_state)"
                 >
                   Yes
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-col>
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port3,Port_state[3]);dialogChangePage3 = true" > Port: 3</v-btn>
-          <v-dialog
-            v-model="dialogChangePage3"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
-
-              <v-card-text>
-                Do you want to go to the page of port 3?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage3 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage3 = false"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <div class="btn_port">
-            <v-btn v-if="Port_state[3]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog3 = true">{{ Port_state[3] }}
-            </v-btn>
-            <v-btn v-else class="btn_toggle"  @click.native="dialog3 = true">{{ Port_state[3] }}
-            </v-btn>
-          </div>
-          <v-dialog
-            v-model="dialog3"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change port state?</v-card-title>
-
-              <v-card-text>
-                Do you want to change the port state?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog3 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog3 = false ; Port_state[3] = onClickBtn(Port_state[3]), $root.Change_port_state(Port3,Port_state[3])"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
+          <span class="Power">Power avg: {{item.PowerAvg}} W</span>
+        </li>
       </v-layout>
 
-      <v-layout row warp class="square_port" justify-center justify-space-around>
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port4,Port_state[4]);dialogChangePage4 = true" > Port: 4</v-btn>
-          <v-dialog
-            v-model="dialogChangePage4"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
 
-              <v-card-text>
-                Do you want to go to the page of port 4?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage4 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage4 = false"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <div class="btn_port">
-            <v-btn v-if="Port_state[4]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog4 = true">{{ Port_state[4] }}
-            </v-btn>
-            <v-btn v-else class="btn_toggle"  @click.native="dialog4 = true">{{ Port_state[4] }}
-            </v-btn>
-          </div>
-          <v-dialog
-            v-model="dialog4"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change port state?</v-card-title>
-
-              <v-card-text>
-                Do you want to change the port state?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog4 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog4 = false ; Port_state[4] = onClickBtn(Port_state[4]), $root.Change_port_state(Port4,Port_state[4])"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port5,Port_state[5]);dialogChangePage5 = true" > Port: 5</v-btn>
-          <v-dialog
-            v-model="dialogChangePage5"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
-
-              <v-card-text>
-                Do you want to go to the page of port 5?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage5 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage5 = false"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <div class="btn_port">
-            <v-btn v-if="Port_state[5]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog5 = true">{{ Port_state[5] }}
-            </v-btn>
-            <v-btn v-else class="btn_toggle"  @click.native="dialog5 = true">{{ Port_state[5] }}
-            </v-btn>
-          </div>
-          <v-dialog
-            v-model="dialog5"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change port state?</v-card-title>
-
-              <v-card-text>
-                Do you want to change the port state?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog5 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog5 = false ; Port_state[5] = onClickBtn(Port_state[5]); $root.Change_port_state(Port5,Port_state[5])"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port6,Port_state[6]);dialogChangePage6 = true" > Port: 6</v-btn>
-          <v-dialog
-            v-model="dialogChangePage6"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
-
-              <v-card-text>
-                Do you want to go to the page of port 6?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage6 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage6 = false"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <div class="btn_port">
-            <v-btn v-if="Port_state[6]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog6 = true">{{ Port_state[6] }}
-            </v-btn>
-            <v-btn v-else class="btn_toggle"  @click.native="dialog6 = true">{{ Port_state[6] }}
-            </v-btn>
-          </div>
-          <v-dialog
-            v-model="dialog6"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change port state?</v-card-title>
-
-              <v-card-text>
-                Do you want to change the port state?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog6 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog6 = false ; Port_state[6] = onClickBtn(Port_state[6]); $root.Change_port_state(Port6,Port_state[6])"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
-        <v-col class="column_port">
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(Port7,Port_state[7]);dialogChangePage7 = true" > Port: 7</v-btn>
-          <v-dialog
-            v-model="dialogChangePage7"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change page?</v-card-title>
-
-              <v-card-text>
-                Do you want to go to the page of port 7?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialogChangePage7 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  :to="{ name: 'Port' } "
-                  @click="dialogChangePage7 = false"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <div class="btn_port">
-            <v-btn v-if="Port_state[7]==='ON'" color="#7CFC00" class="btn_toggle"  @click.native="dialog7 = true">{{ Port_state[7] }}
-            </v-btn>
-            <v-btn v-else class="btn_toggle"  @click.native="dialog7 = true">{{ Port_state[7] }}
-            </v-btn>
-          </div>
-          <v-dialog
-            v-model="dialog7"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-title class="headline">Change port state?</v-card-title>
-
-              <v-card-text>
-                Do you want to change the port state?
-              </v-card-text>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog7 = false"
-                >
-                  No
-                </v-btn>
-
-                <v-btn
-                  color="green darken-1"
-                  flat
-                  @click="dialog7 = false ; Port_state[7] = onClickBtn(Port_state[7]); $root.Change_port_state(Port7,Port_state[7])"
-                >
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
-      </v-layout>
     </v-container>
   </div>
 </template>
 
 <script>
+import {
+  Get_port_max,
+  Get_port_data,
+  Get_port_avg,
+  Get_port_min,
+  Get_port_state,
+  Change_port_state,
+  Get_token
+} from "../API";
+
 export default {
   data: () => ({
     alignments: [
@@ -622,33 +154,36 @@ export default {
       'center',
       'end',
     ],
-    dialog0: false,
-    dialog1: false,
-    dialog2: false,
-    dialog3: false,
-    dialog4: false,
-    dialog5: false,
-    dialog6: false,
-    dialog7: false,
-    dialogChangePage0: false,
-    dialogChangePage1: false,
-    dialogChangePage2: false,
-    dialogChangePage3: false,
-    dialogChangePage4: false,
-    dialogChangePage5: false,
-    dialogChangePage6: false,
-    dialogChangePage7: false,
-    Port_state : [],
-    Port0: "Port 0",
-    Port1: "Port 1",
-    Port2: "Port 2",
-    Port3: "Port 3",
-    Port4: "Port 4",
-    Port5: "Port 5",
-    Port6: "Port 6",
-    Port7: "Port 7"
+    PortList:[
+      {id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF', PowerAvg:0},
+      {id:('Port 1'), label: 'Port 1', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
+      {id:('Port 2'), label: 'Port 2', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
+      {id:('Port 3'), label: 'Port 3', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
+      {id:('Port 4'), label: 'Port 4', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
+      {id:('Port 5'), label: 'Port 5', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
+      {id:('Port 6'), label: 'Port 6', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
+      {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0}
+    ],
+    timer: '',
+    Measures: {},
+    Port_Measures: {},
+    Date_data: {},
+    Powermin: "",
+    Powermax: "",
+    Poweravg: "",
+    password:"",
+    token:"",
+    Powervalue: {
+    },
+    Power: {},
+    start_date: new Date(),
   }),
   methods: {
+
+    async Change_port_state1(Port_number, Port_state) {
+      let port_number = parseInt(Port_number.substr(4, 5))
+      await Change_port_state(this.token,port_number, Port_state)
+    },
     onClickBtn(label) {
       if (label === "OFF") {
         label = "ON"
@@ -659,43 +194,56 @@ export default {
       }
     },
     onClickPort(Port_number, Port_state) {
-      localStorage.setItem("port_number", Port_number)
+      const port_number = parseInt(Port_number.substr(4,5))
+      localStorage.setItem("port_number", port_number)
       localStorage.setItem("port_state", Port_state)
-      console.log(Port_number)
       if (Port_state === "OFF") {
         localStorage.setItem("btn_active", "OFF")
       } else {
         localStorage.setItem("btn_active", "ON")
       }
-    },async Get_port_state(Port_number) {
-      localStorage.setItem("port_number", Port_number)
-      const req = new Request(
-        `http://pcu.local:5000/port_state`,
-        {
-          method: "POST",
-          crossDomain:true,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin":"*",
-          }, body: JSON.stringify({
-            port_id: Port_number,
-          })
-        }
-      )
-      const res = await fetch(req)
-      return (await res.json()).port_state
+    }, cancelAutoUpdate() {
+      clearInterval(this.timer);
     },
+    async ReloadPage() {
+      for (let i = 0; i < 8; i++) {
+        this.PortList[i].Port_state = await Get_port_state(this.token,i)
+        if (this.PortList[i].Port_state === 0) {
+          this.PortList[i].Port_state = "OFF"
+        } else {
+          this.PortList[i].Port_state = "ON"
+        }
+      }
+      this.$forceUpdate()
+    },
+    async get_port_measures(start_date) {
+      const start_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T" +
+        (start_date.getHours()-3) + ":" + start_date.getMinutes() + ":00.000Z").toString()
+      const end_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T"+
+        start_date.getHours() + ":" + start_date.getMinutes() + ":00.000Z").toString()
+
+      for (let i = 0; i < 8; i++) {
+        this.Port_Measures = await Get_port_avg(this.token ,i, start_datetime, end_datetime,1)
+
+        this.PortList[i].PowerAvg = this.Port_Measures["power"]+ ""
+        this.PortList[i].PowerAvg = this.PortList[i].PowerAvg.slice(0,5)
+      }this.$forceUpdate()
+    },
+    async get_Token(){
+      this.password = localStorage.getItem("password")
+      this.token = await Get_token(this.password)
+
+    }
+  },
+  beforeDestroy() {
+    this.cancelAutoUpdate();
   },
   async mounted() {
-    for (let i = 0; i < 8; i++) {
-      this.Port_state[i] = await this.Get_port_state(i)
-      console.log(this.Port_state[i])
-      if (this.Port_state[i] === 0) {
-        this.Port_state[i] = "OFF"
-      } else {
-        this.Port_state[i] = "ON"
-      }
-    }this.$forceUpdate()
+    await this.get_Token()
+    this.timer = setInterval(this.ReloadPage, 60000)
+    await this.get_port_measures(this.start_date)
+    await this.ReloadPage()
+    this.$forceUpdate()
   },
 }
 
@@ -712,13 +260,41 @@ export default {
 }
 .btn_toggle{
   display: flex;
+  width: 10px ;
+  margin-left: 20px;
+}
+.btn_ON{
+  display: flex;
+  min-width: 44px;
+  opacity: 1 !important;
+  max-width: 44px;
+  margin-left: 10px;
+  pointer-events: none;
+  margin-top: 0px
+}
+.btn_ON_OFF{
+  display: flex;
   min-width: 44px;
   max-width: 44px;
-  margin-left: 53px;
+  margin-left: 15px;
+  margin-top: 8px
+}
+
+.btn_OFF{
+  display: flex;
+  min-width: 44px;
+  max-width: 44px;
+  margin-left: 10px;
+  margin-top: 0px;
+  pointer-events: none;
+  background: #FFFFFF !important;
 }
 .btn_change_page{
   display: flex;
-  margin-left: 30px;
+  margin-left: 45px;
+
+}
+.port_state_span{
 
 }
 .column_port > .text {
@@ -726,18 +302,28 @@ export default {
   text-decoration:none;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 10px;
 }
 .square_port{
-  margin-bottom: 10px;
+  white-space: nowrap;
+}
+.Power{
+  color: black;
+  text-decoration:none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .column_port{
   margin: 10px;
   background-color: #D2691E;
-  width: 150px;
-  height: 100px;
-  align-content: center;
+  width: 180px;
+  height: 200px;
+  justify-content: center;
+  align-items: center;
   border-radius: 10px;
 }
 
