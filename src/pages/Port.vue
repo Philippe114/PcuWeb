@@ -230,6 +230,7 @@
       ></v-text-field>
 
       <v-btn @click="get_port_measures(port_number,start_date,end_date,start_time_value,end_time_value,period)">Get info</v-btn>
+        <v-btn @click="get_port_measures_last_hour(port_number,period)">Last hour</v-btn>
       <v-checkbox
         v-model="Power_checkbox"
         :label="'Power'"
@@ -313,13 +314,50 @@ export default {
 
       this.$forceUpdate()
     },
+    async get_port_measures_last_hour(port_number,period) {
+      this.get_info = true
+      this.Powervalue = {}
+      this.Currentvalue = {}
+      this.Voltagevalue = {}
+      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
+        (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
+      const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
+        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
+      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period)
+      console.log(this.Port_Measures)
+      this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
+      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period)
+      this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
+      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period)
+      this.Powermax = (this.Port_Measures["power"]+"").slice(0,5)
+
+      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period)
+      this.Date_data = Object.keys(this.Measures)
+      const Date_data_array = this.Date_data
+      for (let i = 0; i < Object.keys(this.Measures).length; i++) {
+        this.Power = this.Measures[this.Date_data[i]]
+        this.Powervalue[Date_data_array[i]] = (this.Power["power"])
+        this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
+        this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
+      }
+      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period)
+      console.log(this.Port_Change[0])
+      for(let i = 0; i < this.Port_Change.length; i++) {
+        this.Port_ChangeList = (this.Port_Change[i][0])
+        console.log(this.Port_Change[i][0])
+        this.Port_ChangeValueList = (this.Port_Change[i][1])
+        console.log(this.Port_Change[i][1])
+      }
+
+
+      this.$forceUpdate()
+    },
   },
     async mounted() {
       this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
       this.end_time_value = (this.date.getHours() + ":" + this.date.getMinutes())
       this.Port_state = await Get_port_state(this.port_number)
       this.token =  localStorage.getItem("token")
-      console.log(this.token)
       if (this.Port_state === 0) {
         this.Port_state = "OFF"
       } else {
@@ -331,6 +369,7 @@ export default {
       return {
         Power_checkbox : true,
         token:"",
+        start_date_last_hour: new Date(),
         Current_checkbox : false,
         PortChange_checkbox : false,
         Voltage_checkbox : false,

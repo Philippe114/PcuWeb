@@ -224,15 +224,14 @@ export default {
 
       for (let i = 0; i < 8; i++) {
         this.Port_Measures = await Get_port_avg(i, start_datetime, end_datetime,1)
-
         this.PortList[i].PowerAvg = this.Port_Measures["power"]+ ""
         this.PortList[i].PowerAvg = this.PortList[i].PowerAvg.slice(0,5)
+
       }this.$forceUpdate()
     },
     async get_Token(){
       this.password = localStorage.getItem("password")
       this.token = await Get_token(this.password)
-      console.log(this.token)
       localStorage.setItem("token", this.token)
 
     }
