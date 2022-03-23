@@ -89,18 +89,21 @@
     <v-layout row wrap>
       <v-flex v-if="get_info===true">
         <line-chart v-if="Power_checkbox===true" :data="Powervalue" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}" title="Port Power"></line-chart>
+      </v-flex>
 
-      </v-flex>
-      <v-flex v-if="get_info===true">
-      <line-chart  v-if="Current_checkbox===true" :data="Currentvalue" :colors="['#8b47d8']" xtitle="Time" ytitle="Current [A]" :dataset="{borderWidth: 3}" title="Port Current"></line-chart>
-      </v-flex>
-      <v-flex v-if="get_info===true">
+      <v-flex   row wrap v-if="get_info===true">
         <line-chart  v-if="Voltage_checkbox===true" :data="Voltagevalue" :colors="['#8b47d8']" xtitle="Time" ytitle="Voltage [V]" :dataset="{borderWidth: 3}" title="Port Voltage"></line-chart>
       </v-flex>
+
+      <v-flex  row wrap v-if="get_info===true">
+        <line-chart  v-if="Current_checkbox===true" :data="Currentvalue" :colors="['#8b47d8']" xtitle="Time" ytitle="Current [A]" :dataset="{borderWidth: 3}" title="Port Current"></line-chart>
+      </v-flex>
     </v-layout>
+
     <v-flex v-if="get_info===true">
     <column-chart  v-if="PortChange_checkbox===true":data="Port_Change" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}" title="Port State Change"></column-chart>
     </v-flex>
+
       <v-layout row wrap>
       <datetime v-model="start_date">
       <v-menu
@@ -237,7 +240,7 @@
       ></v-checkbox>
       <v-checkbox
         v-model="Current_checkbox"
-        :label="'Curent'"
+        :label="'Current'"
       ></v-checkbox>
       <v-checkbox
         v-model="Voltage_checkbox"
@@ -286,7 +289,6 @@ export default {
       const start_datetime= start_date+"T"+start_time.toString()+":00.000Z"
       const end_datetime = end_date+"T"+end_time.toString()+":00.000Z"
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period)
-      console.log(this.Port_Measures)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
       this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period)
       this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
@@ -299,6 +301,7 @@ export default {
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
         this.Power = this.Measures[this.Date_data[i]]
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
+        console.log(this.Powervalue)
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
         this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
       }
@@ -315,14 +318,17 @@ export default {
       this.$forceUpdate()
     },
     async get_port_measures_last_hour(port_number,period) {
+      this.start_date_last_hour = new Date()
       this.get_info = true
       this.Powervalue = {}
       this.Currentvalue = {}
       this.Voltagevalue = {}
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
         (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
+      console.log(start_datetime)
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
+      console.log(end_datetime)
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period)
       console.log(this.Port_Measures)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
@@ -336,6 +342,7 @@ export default {
       const Date_data_array = this.Date_data
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
         this.Power = this.Measures[this.Date_data[i]]
+        console.log( this.Power)
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
         this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
