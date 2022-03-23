@@ -87,7 +87,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ; item.Port_state = onClickBtn('OFF'); Change_port_state1(item.label,item.Port_state)"
+                  @click="item.dialogON = false ; ReloadPage;Change_port_state1(item.label,item.Port_state)"
                 >
                   Yes
                 </v-btn>
@@ -120,7 +120,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ; item.Port_state = onClickBtn('ON'); Change_port_state1(item.label,item.Port_state)"
+                  @click="item.dialogOFF = false ; ReloadPage; Change_port_state1(item.label,item.Port_state)"
                 >
                   Yes
                 </v-btn>
@@ -207,7 +207,7 @@ export default {
     },
     async ReloadPage() {
       for (let i = 0; i < 8; i++) {
-        this.PortList[i].Port_state = await Get_port_state(this.token,i)
+        this.PortList[i].Port_state = await Get_port_state(i)
         if (this.PortList[i].Port_state === 0) {
           this.PortList[i].Port_state = "OFF"
         } else {
@@ -223,7 +223,7 @@ export default {
         start_date.getHours() + ":" + start_date.getMinutes() + ":00.000Z").toString()
 
       for (let i = 0; i < 8; i++) {
-        this.Port_Measures = await Get_port_avg(this.token ,i, start_datetime, end_datetime,1)
+        this.Port_Measures = await Get_port_avg(i, start_datetime, end_datetime,1)
 
         this.PortList[i].PowerAvg = this.Port_Measures["power"]+ ""
         this.PortList[i].PowerAvg = this.PortList[i].PowerAvg.slice(0,5)

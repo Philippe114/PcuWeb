@@ -20,7 +20,7 @@ export const Get_token = async function(password) {
   }
 }
 
-export const Get_port_max = async function(token,Port_number,start_datetime,end_datetime,period) {
+export const Get_port_max = async function(Port_number,start_datetime,end_datetime,period) {
   localStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
@@ -34,7 +34,6 @@ export const Get_port_max = async function(token,Port_number,start_datetime,end_
         "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
-        Authorization:token,
       },
     }
   )
@@ -42,7 +41,7 @@ export const Get_port_max = async function(token,Port_number,start_datetime,end_
   return (await res.json()).max_measure
 }
 
-export const Get_port_min = async function(token,Port_number,start_datetime,end_datetime,period) {
+export const Get_port_min = async function(Port_number,start_datetime,end_datetime,period) {
   localStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
@@ -56,7 +55,6 @@ export const Get_port_min = async function(token,Port_number,start_datetime,end_
         "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
-        Authorization :token,
       }
     }
   )
@@ -64,7 +62,7 @@ export const Get_port_min = async function(token,Port_number,start_datetime,end_
   return (await res.json()).min_measure
 }
 
-export const Get_port_data = async function (token,Port_number,start_datetime,end_datetime,period) {
+export const Get_port_data = async function (Port_number,start_datetime,end_datetime,period) {
   localStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
@@ -78,7 +76,6 @@ export const Get_port_data = async function (token,Port_number,start_datetime,en
         "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
-        Authorization :token,
       },
     }
   )
@@ -86,7 +83,7 @@ export const Get_port_data = async function (token,Port_number,start_datetime,en
   return (await res.json()).measures
   }
 
-export const Get_port_avg = async function (token,Port_number,start_datetime,end_datetime,period) {
+export const Get_port_avg = async function (Port_number,start_datetime,end_datetime,period) {
   localStorage.setItem("port_number", Port_number)
  // let port_number = parseInt(Port_number.substr(4, 5))
   let start_timefull = start_datetime.toString()
@@ -100,7 +97,6 @@ export const Get_port_avg = async function (token,Port_number,start_datetime,end
         "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        Authorization :token,
       }
     }
   )
@@ -108,7 +104,7 @@ export const Get_port_avg = async function (token,Port_number,start_datetime,end
   return (await res.json()).avg_measure
 }
 
-export const Get_port_change = async function(token,Port_number,start_datetime,end_datetime,period) {
+export const Get_port_change = async function(Port_number,start_datetime,end_datetime,period) {
   localStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
@@ -122,7 +118,6 @@ export const Get_port_change = async function(token,Port_number,start_datetime,e
         "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
-        Authorization :token,
       },
     }
   )
@@ -131,7 +126,7 @@ export const Get_port_change = async function(token,Port_number,start_datetime,e
 }
 
 
-export const Get_port_state = async function (token,Port_number) {
+export const Get_port_state = async function (Port_number) {
   localStorage.setItem("port_number", Port_number)
   let port_number
   if(Port_number.length > 1){
@@ -149,7 +144,6 @@ export const Get_port_state = async function (token,Port_number) {
         "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        Authorization :token,
       },
     }
   )

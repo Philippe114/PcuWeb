@@ -7,8 +7,7 @@
       <v-toolbar-side-icon @click="toggleNavigationBar"></v-toolbar-side-icon>
     <v-spacer></v-spacer>
       <v-toolbar-title>
-      <v-btn  v-if="this.logged == 0" @click="dialogLogin=true" flat icon dark large color="white">Login</v-btn>
-        <v-btn  v-else-if="this.logged == 1" @click="dialogLogin=true" flat icon dark large color="#7CFC00">Login</v-btn>
+      <v-btn  @click="dialogLogin=true" flat icon dark large color="white">Login</v-btn>
       <v-dialog
         v-model="dialogLogin"
         max-width="290"
