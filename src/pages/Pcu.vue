@@ -87,7 +87,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ; ReloadPage;Change_port_state1(item.label,item.Port_state)"
+                  @click="item.dialogON = false ; ReloadPage(); item.Port_state = onClickBtn('OFF');Change_port_state1(item.label,item.Port_state)"
                 >
                   Yes
                 </v-btn>
@@ -120,7 +120,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ; ReloadPage; Change_port_state1(item.label,item.Port_state)"
+                  @click="item.dialogOFF = false ; ReloadPage();item.Port_state = onClickBtn('ON'); Change_port_state1(item.label,item.Port_state)"
                 >
                   Yes
                 </v-btn>
@@ -232,6 +232,8 @@ export default {
     async get_Token(){
       this.password = localStorage.getItem("password")
       this.token = await Get_token(this.password)
+      console.log(this.token)
+      localStorage.setItem("token", this.token)
 
     }
   },

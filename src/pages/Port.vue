@@ -266,7 +266,7 @@ export default {
   name: "Port",
   methods: {
     async Change_port_state(port_number,Port_state){
-      await Change_port_state(port_number,Port_state)
+      await Change_port_state(this.token,port_number,Port_state)
     },
     onClickBtn(label) {
       if (label === "OFF") {
@@ -318,6 +318,8 @@ export default {
       this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
       this.end_time_value = (this.date.getHours() + ":" + this.date.getMinutes())
       this.Port_state = await Get_port_state(this.port_number)
+      this.token =  localStorage.getItem("token")
+      console.log(this.token)
       if (this.Port_state === 0) {
         this.Port_state = "OFF"
       } else {
@@ -328,6 +330,7 @@ export default {
     data:() =>{
       return {
         Power_checkbox : true,
+        token:"",
         Current_checkbox : false,
         PortChange_checkbox : false,
         Voltage_checkbox : false,
