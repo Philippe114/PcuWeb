@@ -6,11 +6,10 @@
           <toolbar @toggleNavigationBar="drawer = !drawer"/>
           <navigation :toggle="drawer"/>
           <v-content>
-            <breadcrumbs />
             <router-view/>
-            <page-footer />
           </v-content>
         </div>
+        <LineChart/>
       </v-app>
     </template>
     <template v-else>
@@ -24,9 +23,12 @@
 </template>
 
 <script>
-
+import LineChart from './pages/chart.js'
 export default {
   name: 'App',
+  components:{
+    LineChart
+  },
   data() {
     return {
       drawer: true

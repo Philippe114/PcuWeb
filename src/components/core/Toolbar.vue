@@ -71,7 +71,7 @@
 <script>
 
 import {Get_token} from "../../API";
-import snackbar from "../../pages/Snackbar";
+
 
 export default {
   data() {
