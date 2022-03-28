@@ -182,3 +182,20 @@ export const Change_port_state =  async function(token,Port_number, Port_state) 
   await res.json()
 }
 
+export const Get_port_instant = async function () {
+  const req = new Request(
+    `http://pcu.local:5000/record/instant`,
+    {
+      method: "GET",
+      crossDomain: true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  )
+  const res = await fetch(req)
+  return (await res.json())
+}
+

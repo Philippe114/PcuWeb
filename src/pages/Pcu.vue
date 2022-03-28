@@ -87,7 +87,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ; ReloadPage(); item.Port_state = onClickBtn('OFF');Change_port_state1(item.label,item.Port_state)"
+                  @click="item.dialogON = false ; item.Port_state = onClickBtn('OFF');Change_port_state1(item.label,item.Port_state);ReloadPage()"
                 >
                   Yes
                 </v-btn>
@@ -120,7 +120,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ; ReloadPage();item.Port_state = onClickBtn('ON'); Change_port_state1(item.label,item.Port_state)"
+                  @click="item.dialogOFF = false ;item.Port_state = onClickBtn('ON'); Change_port_state1(item.label,item.Port_state);ReloadPage()"
                 >
                   Yes
                 </v-btn>
@@ -138,13 +138,10 @@
 
 <script>
 import {
-  Get_port_max,
-  Get_port_data,
   Get_port_avg,
-  Get_port_min,
   Get_port_state,
   Change_port_state,
-  Get_token
+  Get_token, Get_port_instant
 } from "../API";
 
 export default {
@@ -165,6 +162,7 @@ export default {
       {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0}
     ],
     timer: '',
+    timer2: '',
     Measures: {},
     Port_Measures: {},
     Date_data: {},
@@ -183,6 +181,7 @@ export default {
     async Change_port_state1(Port_number, Port_state) {
       let port_number = parseInt(Port_number.substr(4, 5))
       await Change_port_state(this.token,port_number, Port_state)
+
     },
     onClickBtn(label) {
       if (label === "OFF") {
@@ -208,6 +207,7 @@ export default {
     async ReloadPage() {
       for (let i = 0; i < 8; i++) {
         this.PortList[i].Port_state = await Get_port_state(i)
+        console.log(this.PortList[i].Port_state )
         if (this.PortList[i].Port_state === 0) {
           this.PortList[i].Port_state = "OFF"
         } else {
@@ -216,24 +216,36 @@ export default {
       }
       this.$forceUpdate()
     },
-    async get_port_measures(start_date) {
-      const start_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T" +
-        (start_date.getHours()-3) + ":" + start_date.getMinutes() + ":00.000Z").toString()
-      const end_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T"+
-        start_date.getHours() + ":" + start_date.getMinutes() + ":00.000Z").toString()
+    async get_port_measures() {
+      this.Port_Measures = await Get_port_instant()
+      this.PortList[0].PowerAvg = this.Port_Measures.port_0.port_current * this.Port_Measures.port_0.port_voltage
+      this.PortList[1].PowerAvg = this.Port_Measures.port_1.port_current * this.Port_Measures.port_1.port_voltage
+      this.PortList[2].PowerAvg = this.Port_Measures.port_2.port_current * this.Port_Measures.port_2.port_voltage
+      this.PortList[3].PowerAvg = this.Port_Measures.port_3.port_current * this.Port_Measures.port_3.port_voltage
+      this.PortList[4].PowerAvg = this.Port_Measures.port_4.port_current * this.Port_Measures.port_4.port_voltage
+      this.PortList[5].PowerAvg = this.Port_Measures.port_5.port_current * this.Port_Measures.port_5.port_voltage
+      this.PortList[6].PowerAvg = this.Port_Measures.port_6.port_current * this.Port_Measures.port_6.port_voltage
+      this.PortList[7].PowerAvg = this.Port_Measures.port_7.port_current * this.Port_Measures.port_7.port_voltage
+
+
+      //const start_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T" +
+        //(start_date.getHours()-3) + ":" + start_date.getMinutes() + ":00.000Z").toString()
+      //const end_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T"+
+        //start_date.getHours() + ":" + start_date.getMinutes() + ":00.000Z").toString()
 
       for (let i = 0; i < 8; i++) {
-        this.Port_Measures = await Get_port_avg(i, start_datetime, end_datetime,1)
-        this.PortList[i].PowerAvg = this.Port_Measures["power"]+ ""
-        this.PortList[i].PowerAvg = this.PortList[i].PowerAvg.slice(0,5)
-
+        //Ancienne méthode
+        //this.Port_Measures = await Get_port_avg(i, start_datetime, end_datetime,1)
+        //this.PortList[i].PowerAvg = this.Port_Measures["power"]+ ""
+        //this.PortList[i].PowerAvg = this.PortList[i].PowerAvg.slice(0,5)
+        //this.PortList[0].PowerAvg = this.Port_Measures.port_0.port_current * this.Port_Measures.port_0.port_voltage
+        //console.log( this.PortList[i].PowerAvg)
+        this.PortList[i].PowerAvg = this.PortList[i].PowerAvg.toPrecision(4)
       }this.$forceUpdate()
     },
     async get_Token(){
-      this.password = localStorage.getItem("password")
-      this.token = await Get_token(this.password)
-      localStorage.setItem("token", this.token)
-
+      this.token = localStorage.getItem("token")
+      console.log(this.token)
     }
   },
   beforeDestroy() {
@@ -241,8 +253,9 @@ export default {
   },
   async mounted() {
     await this.get_Token()
-    this.timer = setInterval(this.ReloadPage, 60000)
-    await this.get_port_measures(this.start_date)
+    this.timer = setInterval(this.ReloadPage, 600)
+    await this.get_port_measures()
+    this.timer2 = setInterval(this.get_port_measures, 1000)
     await this.ReloadPage()
     this.$forceUpdate()
   },

@@ -195,8 +195,7 @@ export default {
   },
   methods: {
     async savePassword(password) {
-      localStorage.setItem("password", password)
-      this.token = await Get_token(this.password)
+      this.token = await Get_token(password)
       if( this.token.status === 401 ){
         this.snackbar_false = true
         this.logged = 0
@@ -204,10 +203,10 @@ export default {
       }else{
         this.snackbar_true = true
         this.logged = 1
+        localStorage.setItem("token", this.token)
         localStorage.setItem("logged", this.logged)
         console.log(localStorage.getItem("logged"))
       }
-      this.password=""
 
     },
     toggleNavigationBar() {

@@ -1,16 +1,27 @@
 <template>
   <v-container fluid grid-list-xl>
     <v-layout row wrap>
+
+        <v-btn class="button_back" :to="{ name: 'Pcu' }" flat icon dark large color="black">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
+
+
   <h1>
    Port: {{port_number}}
   </h1>
-
+      <h1 class="state">
+        Port State:
+      </h1>
       <div class="btn_port">
         <v-btn v-if="Port_state ==='ON'" color="#7CFC00" class="btn_ON" >{{ Port_state }}
         </v-btn>
         <v-btn v-else-if="Port_state ==='OFF'" color="#FFFFFF" class="btn_OFF"  >{{ Port_state }}
         </v-btn>
       </div>
+      <h1 class="state">
+        Change Port State:
+      </h1>
       <div class="btn_port">
         <v-btn color="#7CFC00" class="btn_ON_OFF"  @click.native="dialogON = true" >ON
         </v-btn>
@@ -86,22 +97,22 @@
     </v-layout>
 
 
-    <v-layout row wrap>
+
       <v-flex >
         <line-chart v-if="Power_checkbox===true" :data="PowervalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0"   title="Port Power" ></line-chart>
       </v-flex>
 
       <v-flex   row wrap v-if="get_info===true">
-        <line-chart  v-if="Voltage_checkbox===true" :data="Voltagevalue" :colors="['#8b47d8']" xtitle="Time" ytitle="Voltage [V]" :dataset="{borderWidth: 3}" :min="0"title="Port Voltage"></line-chart>
+        <line-chart  v-if="Voltage_checkbox===true" :data="VoltagevalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Voltage [V]" :dataset="{borderWidth: 3}" :min="0"title="Port Voltage"></line-chart>
       </v-flex>
 
       <v-flex  row wrap v-if="get_info===true">
-        <line-chart  v-if="Current_checkbox===true" :data="Currentvalue" :colors="['#8b47d8']" xtitle="Time" ytitle="Current [A]" :dataset="{borderWidth: 3}" :min="0" title="Port Current"></line-chart>
+        <line-chart  v-if="Current_checkbox===true" :data="CurrentvalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Current [A]" :dataset="{borderWidth: 3}" :min="0" title="Port Current"></line-chart>
       </v-flex>
-    </v-layout>
+
 
     <v-flex v-if="get_info===true">
-    <column-chart  v-if="PortChange_checkbox===true" :data="Port_Change" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}" title="Port State Change"></column-chart>
+    <line-chart  v-if="PortChange_checkbox===true" :data="Port_ChangeChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3,showLine:false}" title="Port State Change"></line-chart>
     </v-flex>
 
       <v-layout row wrap>
@@ -344,7 +355,6 @@ export default {
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
 
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period)
-      console.log(this.Port_Measures)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
       this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period)
       this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
@@ -371,7 +381,11 @@ export default {
       this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period)
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
+        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
+        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
         this.Port_ChangeValueList = (this.Port_Change[i][1])
+        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+        console.log(this.Port_ChangeChart)
 
       }
 
@@ -419,6 +433,7 @@ export default {
         period:1,
         Port_Measures: {},
         Port_Change: {},
+        Port_ChangeChart: {},
         Port_ChangeList: {},
         Port_ChangeValueList: {},
         Date_data: {},
@@ -458,14 +473,14 @@ export default {
   max-width: 44px;
   margin-left: 25px;
   pointer-events: none;
-  margin-top: 8px
+  margin-top: 3px
 }
 .btn_ON_OFF{
   display: flex;
   min-width: 44px;
   max-width: 44px;
   margin-left: 25px;
-  margin-top: 8px
+  margin-top: 3px
 }
 
 .btn_OFF{
@@ -473,12 +488,18 @@ export default {
   min-width: 44px;
   max-width: 44px;
   margin-left: 25px;
-  margin-top: 8px;
+  margin-top: 3px;
   pointer-events: none;
   background: #FFFFFF !important;
 }
 .shrink{
   margin-left: 10px;
+}
+.state{
+  margin-left: 10px;
+}
+.button_back{
+  margin-top: 0 ;
 }
 
 </style>
