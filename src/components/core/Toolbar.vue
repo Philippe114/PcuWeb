@@ -94,104 +94,10 @@ export default {
       error: false,
       showResult: false,
       result: '',
-      items: [
-        {
-          icon: 'account_circle',
-          href: '#',
-          title: 'Profile',
-          click: (e) => {
-          }
-        },
-        {
-          icon: 'settings',
-          href: '#',
-          title: 'Settings',
-          click: () => {
-            const vm = this;
-
-            vm.dialogSettings = true;
-          }
-        },
-        {
-          icon: 'exit_to_app',
-          href: '#',
-          title: 'Log Out',
-          click: () => {
-            const vm = this;
-
-            vm.$router.push({name: 'Login'});
-          }
-        }
-      ],
-      notifications:
-        [
-          {
-            title: 'New mail from Adam Joe',
-            color: 'light-blue',
-            icon: 'email',
-            actionAt: '12 min ago',
-            isActive: true,
-            onClick: () => {
-              const vm = this;
-
-              vm.$router.push({name: 'Mailbox'});
-            }
-          },
-          {
-            title: 'Scheculed meeting',
-            color: 'red',
-            icon: 'calendar_today',
-            actionAt: '46 min ago',
-            isActive: true,
-            onClick: () => {
-              const vm = this;
-
-              vm.$router.push({name: 'Calendar'});
-            }
-          },
-          {
-            title: 'New mail from Github',
-            color: 'light-blue',
-            icon: 'email',
-            isActive: true,
-            timeLabel: '2 hour ago',
-            onClick: () => {
-              const vm = this;
-
-              vm.$router.push({name: 'Mailbox'});
-            }
-          }
-        ],
-      languages: [
-        {name: 'English', languageCode: 'en', path: require('../../assets/flags/en.png')},
-        {name: 'Turkish', languageCode: 'tr', path: require('../../assets/flags/tr.png')},
-        {name: 'French', languageCode: 'fr', path: require('../../assets/flags/fr.png')},
-        {name: 'German', languageCode: 'de', path: require('../../assets/flags/de.png')},
-        {name: 'Japanese', languageCode: 'ja', path: require('../../assets/flags/ja.png')},
-        {name: 'Simplified Chinese', languageCode: 'ch', path: require('../../assets/flags/ch.png')}
-      ]
     }
   },
 
   computed: {
-    selectedLanguageFlag() {
-      const vm = this;
-
-      switch (vm.$i18n.locale) {
-        case 'en':
-          return require('../../assets/flags/en.png');
-        case 'tr':
-          return require('../../assets/flags/tr.png');
-        case 'fr':
-          return require('../../assets/flags/fr.png');
-        case 'de':
-          return require('../../assets/flags/de.png');
-        case 'ja':
-          return require('../../assets/flags/ja.png');
-        case 'ch':
-          return require('../../assets/flags/ch.png');
-      }
-    }
   },
   methods: {
     async savePassword(password) {

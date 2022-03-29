@@ -99,7 +99,7 @@
 
 
       <v-flex >
-        <line-chart v-if="Power_checkbox===true" :data="PowervalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0"   title="Port Power" ></line-chart>
+        <line-chart v-if="Power_checkbox===true" :data="PowervalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Port Power" ></line-chart>
       </v-flex>
 
       <v-flex   row wrap v-if="get_info===true">
@@ -313,7 +313,6 @@ export default {
       this.Date_data = Object.keys(this.Measures)
       const Date_data_array = this.Date_data
       let Date_data_array_update = {}
-      console.log(this.Date_data)
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
 
         this.Power = this.Measures[this.Date_data[i]]
@@ -326,13 +325,16 @@ export default {
         this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
+
       }
       this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period)
 
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
-
+        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
+        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
         this.Port_ChangeValueList = (this.Port_Change[i][1])
+        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
 
       }
 
@@ -385,8 +387,6 @@ export default {
         this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
         this.Port_ChangeValueList = (this.Port_Change[i][1])
         this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
-        console.log(this.Port_ChangeChart)
-
       }
 
 
@@ -407,6 +407,7 @@ export default {
 
     data:() =>{
       return {
+        test:[],
         Power_checkbox : true,
         token:"",
         start_date_last_hour: new Date(),

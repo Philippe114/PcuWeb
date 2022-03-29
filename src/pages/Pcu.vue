@@ -201,13 +201,13 @@ export default {
       } else {
         localStorage.setItem("btn_active", "ON")
       }
-    }, cancelAutoUpdate() {
+    },
+    cancelAutoUpdate() {
       clearInterval(this.timer);
     },
     async ReloadPage() {
       for (let i = 0; i < 8; i++) {
         this.PortList[i].Port_state = await Get_port_state(i)
-        console.log(this.PortList[i].Port_state )
         if (this.PortList[i].Port_state === 0) {
           this.PortList[i].Port_state = "OFF"
         } else {
@@ -218,14 +218,14 @@ export default {
     },
     async get_port_measures() {
       this.Port_Measures = await Get_port_instant()
-      this.PortList[0].PowerAvg = this.Port_Measures.port_0.port_current * this.Port_Measures.port_0.port_voltage
-      this.PortList[1].PowerAvg = this.Port_Measures.port_1.port_current * this.Port_Measures.port_1.port_voltage
-      this.PortList[2].PowerAvg = this.Port_Measures.port_2.port_current * this.Port_Measures.port_2.port_voltage
-      this.PortList[3].PowerAvg = this.Port_Measures.port_3.port_current * this.Port_Measures.port_3.port_voltage
-      this.PortList[4].PowerAvg = this.Port_Measures.port_4.port_current * this.Port_Measures.port_4.port_voltage
-      this.PortList[5].PowerAvg = this.Port_Measures.port_5.port_current * this.Port_Measures.port_5.port_voltage
-      this.PortList[6].PowerAvg = this.Port_Measures.port_6.port_current * this.Port_Measures.port_6.port_voltage
-      this.PortList[7].PowerAvg = this.Port_Measures.port_7.port_current * this.Port_Measures.port_7.port_voltage
+      this.PortList[0].PowerAvg = this.Port_Measures.port_0.port_power
+      this.PortList[1].PowerAvg = this.Port_Measures.port_1.port_power
+      this.PortList[2].PowerAvg = this.Port_Measures.port_2.port_power
+      this.PortList[3].PowerAvg = this.Port_Measures.port_3.port_power
+      this.PortList[4].PowerAvg = this.Port_Measures.port_4.port_power
+      this.PortList[5].PowerAvg = this.Port_Measures.port_5.port_power
+      this.PortList[6].PowerAvg = this.Port_Measures.port_6.port_power
+      this.PortList[7].PowerAvg = this.Port_Measures.port_7.port_power
 
 
       //const start_datetime = (start_date.getFullYear() +"-"+ (start_date.getMonth()+1) +"-"+ start_date.getDate()+"T" +

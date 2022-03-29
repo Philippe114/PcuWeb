@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import Dashboard from '../pages/Dashboard.vue';
 import Pcu from '../pages/Pcu.vue';
 import Port from "../pages/Port";
+import Settings from "../pages/Settings";
 
 
 Vue.use(Router);
@@ -17,6 +18,16 @@ export default new Router({
       meta: {
         breadcrumb: [
           { name: 'dashboard' }
+        ]
+      }
+    },
+    {
+      path: '/Settings',
+      name: 'Settings',
+      component: Settings,
+      meta: {
+        breadcrumb: [
+          { name: 'settings' }
         ]
       }
     },

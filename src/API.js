@@ -19,6 +19,58 @@ export const Get_token = async function(password) {
     return res;
   }
 }
+export const Modify_password = async function(password,token) {
+  const req = new Request(
+    `http://pcu.local:5000/login/modify/${password}`,
+    {
+      method: "PUT",
+      crossDomain: true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        Authorization: token,
+      },
+    }
+  )
+  const res = await fetch(req)
+  return (await res.json())
+}
+export const Modify_reference_voltage = async function(reference_voltage,token) {
+  const req = new Request(
+    `http://pcu.local:5000/adc/reference_voltage/${reference_voltage}`,
+    {
+      method: "PUT",
+      crossDomain:true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin":"*",
+        Authorization :token,
+      },
+    }
+  )
+  const res = await fetch(req)
+  return (await res.json())
+}
+  export const Change_location_db = async function(mem_type,token) {
+  console.log(mem_type)
+    const req = new Request(
+    `http://pcu.local:5000/record/memory_type/${mem_type}`,
+  {
+    method: "PUT",
+    crossDomain:true,
+    headers: {
+    "Origin": "http://localhost:8080",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin":"*",
+    Authorization :token,
+  },
+  }
+    )
+    const res = await fetch(req)
+    return (await res.json())
+  }
 
 export const Get_port_max = async function(Port_number,start_datetime,end_datetime,period) {
   localStorage.setItem("port_number", Port_number)
@@ -127,7 +179,6 @@ export const Get_port_change = async function(Port_number,start_datetime,end_dat
 
 
 export const Get_port_state = async function (Port_number) {
-  localStorage.setItem("port_number", Port_number)
   let port_number
   if(Port_number.length > 1){
     port_number = parseInt(Port_number.substr(4,5))
