@@ -194,12 +194,12 @@ export default {
     },
     onClickPort(Port_number, Port_state) {
       const port_number = parseInt(Port_number.substr(4,5))
-      localStorage.setItem("port_number", port_number)
-      localStorage.setItem("port_state", Port_state)
+      sessionStorage.setItem("port_number", port_number)
+      sessionStorage.setItem("port_state", Port_state)
       if (Port_state === "OFF") {
-        localStorage.setItem("btn_active", "OFF")
+        sessionStorage.setItem("btn_active", "OFF")
       } else {
-        localStorage.setItem("btn_active", "ON")
+        sessionStorage.setItem("btn_active", "ON")
       }
     },
     cancelAutoUpdate() {
@@ -244,7 +244,7 @@ export default {
       }this.$forceUpdate()
     },
     async get_Token(){
-      this.token = localStorage.getItem("token")
+      this.token = sessionStorage.getItem("token")
       console.log(this.token)
     }
   },

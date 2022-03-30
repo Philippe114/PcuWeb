@@ -73,7 +73,7 @@ export const Modify_reference_voltage = async function(reference_voltage,token) 
   }
 
 export const Get_port_max = async function(Port_number,start_datetime,end_datetime,period) {
-  localStorage.setItem("port_number", Port_number)
+  sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
@@ -94,7 +94,7 @@ export const Get_port_max = async function(Port_number,start_datetime,end_dateti
 }
 
 export const Get_port_min = async function(Port_number,start_datetime,end_datetime,period) {
-  localStorage.setItem("port_number", Port_number)
+  sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
@@ -115,7 +115,7 @@ export const Get_port_min = async function(Port_number,start_datetime,end_dateti
 }
 
 export const Get_port_data = async function (Port_number,start_datetime,end_datetime,period) {
-  localStorage.setItem("port_number", Port_number)
+  sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
@@ -136,7 +136,7 @@ export const Get_port_data = async function (Port_number,start_datetime,end_date
   }
 
 export const Get_port_avg = async function (Port_number,start_datetime,end_datetime,period) {
-  localStorage.setItem("port_number", Port_number)
+  sessionStorage.setItem("port_number", Port_number)
  // let port_number = parseInt(Port_number.substr(4, 5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
@@ -157,7 +157,7 @@ export const Get_port_avg = async function (Port_number,start_datetime,end_datet
 }
 
 export const Get_port_change = async function(Port_number,start_datetime,end_datetime,period) {
-  localStorage.setItem("port_number", Port_number)
+  sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
@@ -203,8 +203,8 @@ export const Get_port_state = async function (Port_number) {
 }
 
 export const Change_port_state =  async function(token,Port_number, Port_state) {
-  localStorage.setItem("port_number", Port_number)
-  localStorage.setItem("port_state", Port_state)
+  sessionStorage.setItem("port_number", Port_number)
+  sessionStorage.setItem("port_state", Port_state)
 
   let port_state
  // let port_number = parseInt(Port_number.substr(4,5))

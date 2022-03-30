@@ -397,7 +397,7 @@ export default {
       this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
       this.end_time_value = (this.date.getHours() + ":" + this.date.getMinutes())
       this.Port_state = await Get_port_state(this.port_number)
-      this.token =  localStorage.getItem("token")
+      this.token =  sessionStorage.getItem("token")
       if (this.Port_state === 0) {
         this.Port_state = "OFF"
       } else {
@@ -414,8 +414,8 @@ export default {
         Current_checkbox : false,
         PortChange_checkbox : false,
         Voltage_checkbox : false,
-        port_number: localStorage.getItem("port_number"),
-        btn_active: localStorage.getItem("btn_active"),
+        port_number: sessionStorage.getItem("port_number"),
+        btn_active: sessionStorage.getItem("btn_active"),
         Port_state: [],
         toggle_exclusive: 0,
         dialogON: false,

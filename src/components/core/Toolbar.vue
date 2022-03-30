@@ -105,13 +105,13 @@ export default {
       if( this.token.status === 401 ){
         this.snackbar_false = true
         this.logged = 0
-        localStorage.setItem("logged", this.logged)
+        sessionStorage.setItem("logged", this.logged)
       }else{
         this.snackbar_true = true
         this.logged = 1
-        localStorage.setItem("token", this.token)
-        localStorage.setItem("logged", this.logged)
-        console.log(localStorage.getItem("logged"))
+        sessionStorage.setItem("token", this.token)
+        sessionStorage.setItem("logged", this.logged)
+        console.log(sessionStorage.getItem("logged"))
       }
 
     },
@@ -157,7 +157,7 @@ export default {
     }
   },
   async mounted() {
-    this.logged = localStorage.getItem("logged")
+    this.logged = sessionStorage.getItem("logged")
     console.log(this.logged)
     this.$forceUpdate()
   }
