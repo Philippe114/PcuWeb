@@ -87,7 +87,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ; item.Port_State = onClickBtn('OFF');Change_port_state1(item.label,item.Port_State,hostname);ReloadPage(hostname)"
+                  @click="item.dialogON = false ; item.Port_State = onClickBtn('OFF');Change_port_state1(item.label,item.Port_State,hostname);"
                 >
                   Yes
                 </v-btn>
@@ -120,7 +120,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ;item.Port_State = onClickBtn('ON'); Change_port_state1(item.label,item.Port_State,hostname);ReloadPage(hostname)"
+                  @click="item.dialogOFF = false ;item.Port_State = onClickBtn('ON'); Change_port_state1(item.label,item.Port_State,hostname);"
                 >
                   Yes
                 </v-btn>
