@@ -244,7 +244,9 @@
       ></v-text-field>
 
       <v-btn @click="get_port_measures(port_number,start_date,end_date,start_time_value,end_time_value,period)">Get info</v-btn>
-        <v-btn @click="get_port_measures_last_hour(port_number,period)">Last hour</v-btn>
+        <v-btn @click="get_port_measures_last_hour(port_number,30)">Last hour</v-btn>
+        <v-btn @click="get_port_measures_last_5min(port_number,1)">Last 5 min</v-btn>
+        <v-btn @click="get_port_measures_last_day(port_number,600)">Last Day</v-btn>
       <v-checkbox
         v-model="Power_checkbox"
         :label="'Power'"
@@ -342,6 +344,7 @@ export default {
       this.$forceUpdate()
     },
     async get_port_measures_last_hour(port_number,period) {
+      this.period = period
       this.start_date_last_hour = new Date()
       this.get_info = true
       this.Powervalue = {}
@@ -352,6 +355,110 @@ export default {
       this.VoltagevalueChart = {}
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
         (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+      const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
+        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
+      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
+      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Powermax = (this.Port_Measures["power"]+"").slice(0,5)
+
+      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Date_data = Object.keys(this.Measures)
+      let Date_data_array = this.Date_data
+      let Date_data_array_update = {}
+      for (let i = 0; i < Object.keys(this.Measures).length; i++) {
+
+        this.Power = this.Measures[this.Date_data[i]]
+
+        this.Powervalue[Date_data_array[i]] = (this.Power["power"])
+        this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
+        this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
+        Date_data_array_update[i] = Date_data_array[i].replace("T",":")
+        Date_data_array_update[i] = Date_data_array_update[i].replace("Z","")
+        this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
+        this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
+        this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
+      }
+      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
+      for(let i = 0; i < this.Port_Change.length; i++) {
+        this.Port_ChangeList = (this.Port_Change[i][0])
+        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
+        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
+        this.Port_ChangeValueList = (this.Port_Change[i][1])
+        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+      }
+
+
+      this.$forceUpdate()
+    },
+    async get_port_measures_last_5min(port_number,period) {
+      this.period = period
+      this.start_date_last_hour = new Date()
+      this.get_info = true
+      this.Powervalue = {}
+      this.PowervalueChart = {}
+      this.Currentvalue = {}
+      this.Voltagevalue = {}
+      this.CurrentvalueChart = {}
+      this.VoltagevalueChart = {}
+      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
+        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()-5) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+      const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
+        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
+      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
+      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Powermax = (this.Port_Measures["power"]+"").slice(0,5)
+
+      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Date_data = Object.keys(this.Measures)
+      let Date_data_array = this.Date_data
+      let Date_data_array_update = {}
+      for (let i = 0; i < Object.keys(this.Measures).length; i++) {
+
+        this.Power = this.Measures[this.Date_data[i]]
+
+        this.Powervalue[Date_data_array[i]] = (this.Power["power"])
+        this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
+        this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
+        Date_data_array_update[i] = Date_data_array[i].replace("T",":")
+        Date_data_array_update[i] = Date_data_array_update[i].replace("Z","")
+        this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
+        this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
+        this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
+      }
+      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
+      for(let i = 0; i < this.Port_Change.length; i++) {
+        this.Port_ChangeList = (this.Port_Change[i][0])
+        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
+        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
+        this.Port_ChangeValueList = (this.Port_Change[i][1])
+        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+      }
+
+
+      this.$forceUpdate()
+    },
+    async get_port_measures_last_day(port_number,period) {
+      this.period = period
+      this.start_date_last_hour = new Date()
+      this.get_info = true
+      this.Powervalue = {}
+      this.PowervalueChart = {}
+      this.Currentvalue = {}
+      this.Voltagevalue = {}
+      this.CurrentvalueChart = {}
+      this.VoltagevalueChart = {}
+      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ (this.start_date_last_hour.getDate()-1)+"T" +
+        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
