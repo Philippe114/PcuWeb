@@ -9,7 +9,6 @@
             <router-view/>
           </v-content>
         </div>
-        <LineChart/>
       </v-app>
     </template>
     <template v-else>
@@ -23,11 +22,10 @@
 </template>
 
 <script>
-import LineChart from './pages/chart.js'
 export default {
   name: 'App',
   components:{
-    LineChart
+
   },
   data() {
     return {

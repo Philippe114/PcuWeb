@@ -1,7 +1,7 @@
-export const Get_token = async function(password) {
+export const Get_token = async function(password,hostname) {
   //let port_number = parseInt(Port_number.substr(4,5))
   const req = new Request(
-    `http://pcu.local:5000/login/${password}`,
+    `http://${hostname}.local:5000/login/${password}`,
     {
       method: "GET",
       crossDomain:true,
@@ -19,9 +19,9 @@ export const Get_token = async function(password) {
     return res;
   }
 }
-export const Modify_password = async function(password,token) {
+export const Modify_password = async function(password,token,hostname) {
   const req = new Request(
-    `http://pcu.local:5000/login/modify/${password}`,
+    `http://${hostname}.local:5000/login/modify/${password}`,
     {
       method: "PUT",
       crossDomain: true,
@@ -36,9 +36,10 @@ export const Modify_password = async function(password,token) {
   const res = await fetch(req)
   return (await res.json())
 }
-export const Modify_reference_voltage = async function(reference_voltage,token) {
+export const Modify_reference_voltage = async function(reference_voltage,token,hostname) {
+  console.log(reference_voltage)
   const req = new Request(
-    `http://pcu.local:5000/adc/reference_voltage/${reference_voltage}`,
+    `http://${hostname}.local:5000/adc/reference_voltage/${reference_voltage}`,
     {
       method: "PUT",
       crossDomain:true,
@@ -51,12 +52,13 @@ export const Modify_reference_voltage = async function(reference_voltage,token) 
     }
   )
   const res = await fetch(req)
+  console.log(res)
   return (await res.json())
 }
-  export const Change_location_db = async function(mem_type,token) {
+  export const Change_location_db = async function(mem_type,token,hostname) {
   console.log(mem_type)
     const req = new Request(
-    `http://pcu.local:5000/record/memory_type/${mem_type}`,
+    `http://${hostname}.local:5000/record/memory_type/${mem_type}`,
   {
     method: "PUT",
     crossDomain:true,
@@ -72,13 +74,13 @@ export const Modify_reference_voltage = async function(reference_voltage,token) 
     return (await res.json())
   }
 
-export const Get_port_max = async function(Port_number,start_datetime,end_datetime,period) {
+export const Get_port_max = async function(Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://pcu.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -93,13 +95,13 @@ export const Get_port_max = async function(Port_number,start_datetime,end_dateti
   return (await res.json()).max_measure
 }
 
-export const Get_port_min = async function(Port_number,start_datetime,end_datetime,period) {
+export const Get_port_min = async function(Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://pcu.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -114,13 +116,13 @@ export const Get_port_min = async function(Port_number,start_datetime,end_dateti
   return (await res.json()).min_measure
 }
 
-export const Get_port_data = async function (Port_number,start_datetime,end_datetime,period) {
+export const Get_port_data = async function (Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://pcu.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -135,13 +137,13 @@ export const Get_port_data = async function (Port_number,start_datetime,end_date
   return (await res.json()).measures
   }
 
-export const Get_port_avg = async function (Port_number,start_datetime,end_datetime,period) {
+export const Get_port_avg = async function (Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
  // let port_number = parseInt(Port_number.substr(4, 5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://pcu.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain: true,
@@ -156,13 +158,13 @@ export const Get_port_avg = async function (Port_number,start_datetime,end_datet
   return (await res.json()).avg_measure
 }
 
-export const Get_port_change = async function(Port_number,start_datetime,end_datetime,period) {
+export const Get_port_change = async function(Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
   //let port_number = parseInt(Port_number.substr(4,5))
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://pcu.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -178,7 +180,7 @@ export const Get_port_change = async function(Port_number,start_datetime,end_dat
 }
 
 
-export const Get_port_state = async function (Port_number) {
+export const Get_port_state = async function (Port_number,hostname) {
   let port_number
   if(Port_number.length > 1){
     port_number = parseInt(Port_number.substr(4,5))
@@ -187,7 +189,7 @@ export const Get_port_state = async function (Port_number) {
     port_number = Port_number
   }
   const req = new Request(
-    `http://pcu.local:5000/port/${port_number}/state`,
+    `http://${hostname}.local:5000/port/${port_number}/state`,
     {
       method: "GET",
       crossDomain: true,
@@ -202,7 +204,7 @@ export const Get_port_state = async function (Port_number) {
   return (await res.json()).port_state
 }
 
-export const Change_port_state =  async function(token,Port_number, Port_state) {
+export const Change_port_state =  async function(token,Port_number, Port_state,hostname) {
   sessionStorage.setItem("port_number", Port_number)
   sessionStorage.setItem("port_state", Port_state)
 
@@ -214,7 +216,7 @@ export const Change_port_state =  async function(token,Port_number, Port_state) 
     port_state = 1
   }
   const req = new Request(
-    `http://pcu.local:5000/port/state`,
+    `http://${hostname}.local:5000/port/state`,
     {
       method: "PUT",
       crossDomain:true,
@@ -233,9 +235,9 @@ export const Change_port_state =  async function(token,Port_number, Port_state) 
   await res.json()
 }
 
-export const Get_port_instant = async function () {
+export const Get_port_instant = async function (hostname) {
   const req = new Request(
-    `http://pcu.local:5000/record/instant`,
+    `http://${hostname}.local:5000/record/instant`,
     {
       method: "GET",
       crossDomain: true,

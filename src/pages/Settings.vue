@@ -27,30 +27,45 @@
 
 <script>
 import {Change_location_db, Modify_password, Modify_reference_voltage} from "../API";
+import config from "../config/hostname.json";
+
 export default {
   name: "Settings",
   async mounted() {
-    this.token = localStorage.getItem("token")
-  },
+    for(let i=0; i < config.numberOfSystem; i++) {
+      this.PcuList[i] = config.hostnameSystem[i]
+      let tokenStorage = "token" + i
+      this.token[i] = sessionStorage.getItem(tokenStorage.toString())
+    }
+    },
   methods: {
     async modify_password(password){
-      await Modify_password(password, this.token)
+      for(let i=0; i < config.numberOfSystem; i++) {
+        await Modify_password(password, this.token[i], this.PcuList[i])
+      }
     },
     async modify_reference_voltage(reference_voltage){
-      await Modify_reference_voltage(reference_voltage, this.token)
-    },
-    async change_location_db(number){
-      let db_location
-      if(number === 0){
-         db_location = "ram"
-      }else{
-         db_location = "sd"
+      for(let i=0; i < config.numberOfSystem; i++) {
+        await Modify_reference_voltage(reference_voltage, this.token[i], this.PcuList[i])
       }
-      await Change_location_db(db_location, this.token)
+    },
+    async change_location_db(number) {
+      for (let i = 0; i < config.numberOfSystem; i++) {
+        let db_location
+        if (number === 0) {
+          db_location = "ram"
+        } else {
+          db_location = "sd"
+        }
+        await Change_location_db(db_location, this.token[i], this.PcuList[i])
+      }
     }
   },
   data: () => ({
-    token:"",
+    token:[],
+    PcuList:[
+
+    ],
     new_password: "",
     new_vref: "",
     toggle_db:0,

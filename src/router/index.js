@@ -12,7 +12,7 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/Dashboard',
       name: 'Dashboard',
       component: Dashboard,
       meta: {
@@ -32,7 +32,7 @@ export default new Router({
       }
     },
     {
-      path: '/Pcu',
+      path: '/',
       name: 'Pcu',
       component: Pcu,
       meta: {

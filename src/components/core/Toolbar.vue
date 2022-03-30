@@ -71,6 +71,7 @@
 <script>
 
 import {Get_token} from "../../API";
+import config from "../../config/hostname.json";
 
 
 export default {
@@ -78,7 +79,8 @@ export default {
     return {
       dialogLogin: false,
       password: "",
-      token: "",
+      token: [],
+      PcuList:[],
       snackbar_false:false,
       snackbar_true:false,
       logged:0,
@@ -101,20 +103,26 @@ export default {
   },
   methods: {
     async savePassword(password) {
-      this.token = await Get_token(password)
-      if( this.token.status === 401 ){
-        this.snackbar_false = true
-        this.logged = 0
-        sessionStorage.setItem("logged", this.logged)
-      }else{
-        this.snackbar_true = true
-        this.logged = 1
-        sessionStorage.setItem("token", this.token)
-        sessionStorage.setItem("logged", this.logged)
-        console.log(sessionStorage.getItem("logged"))
-      }
-
+      for(let i=0; i < config.numberOfSystem; i++) {
+        this.token[i] = await Get_token(password, this.PcuList[i])
+        if (this.token[i].status === 401) {
+          this.snackbar_false = true
+          this.logged = 0
+          sessionStorage.setItem("logged", this.logged)
+        } else {
+          this.snackbar_true = true
+          this.logged = 1
+          let tokenStorage = "token"+i
+          sessionStorage.setItem(tokenStorage.toString(), this.token[i])
+          sessionStorage.setItem("logged", this.logged)
+        }
+      } location.reload()
     },
+    setup_hostname(){
+      for(let i=0; i < config.numberOfSystem; i++){
+        this.PcuList[i] = config.hostnameSystem[i]
+      }
+      },
     toggleNavigationBar() {
       const vm = this;
 
@@ -157,8 +165,8 @@ export default {
     }
   },
   async mounted() {
+    this.setup_hostname()
     this.logged = sessionStorage.getItem("logged")
-    console.log(this.logged)
     this.$forceUpdate()
   }
 }

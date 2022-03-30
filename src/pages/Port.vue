@@ -281,7 +281,7 @@ export default {
   name: "Port",
   methods: {
     async Change_port_state(port_number,Port_state){
-      await Change_port_state(this.token,port_number,Port_state)
+      await Change_port_state(this.token,port_number,Port_state,this.hostname)
     },
     onClickBtn(label) {
       if (label === "OFF") {
@@ -302,14 +302,14 @@ export default {
       this.VoltagevalueChart = {}
       const start_datetime= start_date+"T"+start_time.toString()+":00.000Z"
       const end_datetime = end_date+"T"+end_time.toString()+":00.000Z"
-      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period)
+      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
-      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period)
+      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
-      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period)
+      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Powermax = (this.Port_Measures["power"]+"").slice(0,5)
 
-      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period)
+      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Date_data = Object.keys(this.Measures)
       const Date_data_array = this.Date_data
       let Date_data_array_update = {}
@@ -327,7 +327,7 @@ export default {
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
 
       }
-      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period)
+      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
 
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
@@ -356,14 +356,14 @@ export default {
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
 
-      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period)
+      this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
-      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period)
+      this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
-      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period)
+      this.Port_Measures = await Get_port_max(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Powermax = (this.Port_Measures["power"]+"").slice(0,5)
 
-      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period)
+      this.Measures = await Get_port_data(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Date_data = Object.keys(this.Measures)
       let Date_data_array = this.Date_data
       let Date_data_array_update = {}
@@ -380,7 +380,7 @@ export default {
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
       }
-      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period)
+      this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
         this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
@@ -396,8 +396,9 @@ export default {
     async mounted() {
       this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
       this.end_time_value = (this.date.getHours() + ":" + this.date.getMinutes())
-      this.Port_state = await Get_port_state(this.port_number)
+      this.Port_state = await Get_port_state(this.port_number,this.hostname)
       this.token =  sessionStorage.getItem("token")
+      console.log(this.token)
       if (this.Port_state === 0) {
         this.Port_state = "OFF"
       } else {
@@ -408,6 +409,7 @@ export default {
     data:() =>{
       return {
         test:[],
+        hostname: sessionStorage.getItem("hostname"),
         Power_checkbox : true,
         token:"",
         start_date_last_hour: new Date(),
