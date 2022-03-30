@@ -247,6 +247,9 @@
         <v-btn @click="get_port_measures_last_hour(port_number,30)">Last hour</v-btn>
         <v-btn @click="get_port_measures_last_5min(port_number,1)">Last 5 min</v-btn>
         <v-btn @click="get_port_measures_last_day(port_number,600)">Last Day</v-btn>
+      </v-layout>
+
+    <v-layout row wrap>
       <v-checkbox
         v-model="Power_checkbox"
         :label="'Power'"
