@@ -357,11 +357,13 @@ export default {
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
       this.Port_ChangeChart = {}
-      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
-        (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
-
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+      this.start_date_last_hour.setHours((this.start_date_last_hour.getHours()-1))
+      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
+        (this.start_date_last_hour.getHours()) + ":" + this.start_date_last_hour.getMinutes() + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
 
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
@@ -410,13 +412,14 @@ export default {
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
       this.Port_ChangeChart = {}
-      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
-        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()-5) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
-
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+      this.start_date_last_hour.setMinutes((this.start_date_last_hour.getMinutes()-5))
 
+      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
+        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
+      console.log(this.Port_Measures)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
       this.Port_Measures = await Get_port_min(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Powermin = (this.Port_Measures["power"]+"").slice(0,5)
@@ -463,11 +466,11 @@ export default {
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
       this.Port_ChangeChart = {}
-      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ (this.start_date_last_hour.getDate()-1)+"T" +
-        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
-
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+      this.start_date_last_hour.setDate((this.start_date_last_hour.getDate()-1))
+      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ (this.start_date_last_hour.getDate())+"T" +
+        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
