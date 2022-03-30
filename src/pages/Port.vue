@@ -305,6 +305,7 @@ export default {
       this.Voltagevalue = {}
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
+      this.Port_Change = {}
       const start_datetime= start_date+"T"+start_time.toString()+":00.000Z"
       const end_datetime = end_date+"T"+end_time.toString()+":00.000Z"
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
@@ -356,6 +357,7 @@ export default {
       this.Voltagevalue = {}
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
+      this.Port_Change = {}
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
         (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
@@ -408,6 +410,7 @@ export default {
       this.Voltagevalue = {}
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
+      this.Port_Change = {}
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
         (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()-5) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
@@ -460,6 +463,7 @@ export default {
       this.Voltagevalue = {}
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
+      this.Port_Change = {}
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ (this.start_date_last_hour.getDate()-1)+"T" +
         (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
