@@ -351,10 +351,10 @@ export default {
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
-        (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
+        (this.start_date_last_hour.getHours()-1) + ":" + this.start_date_last_hour.getMinutes() + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
-        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":00.000Z").toString()
+        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
       this.Poweravg = (this.Port_Measures["power"]+"").slice(0,5)
