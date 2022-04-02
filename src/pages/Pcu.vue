@@ -138,7 +138,7 @@
         </v-snackbar>
 
       </v-layout>
-        <line-chart  :data="PowervalueChart8[0]" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Ports Power" ></line-chart>
+        <line-chart  :data="PowervalueChart8[hostname.hostname_number]" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Ports Power" ></line-chart>
       </v-container>
 
 
@@ -230,74 +230,68 @@ export default {
     cancelAutoUpdate() {
       clearInterval(this.timer);
     },
-    async ReloadPage() {
-      for(let k=0; k < config.numberOfSystem; k++) {
-        for (let i = 0; i < 8; i++) {
-          this.PcuList[k].PortList[i].Port_State = await Get_port_state(i, this.PcuList[k].hostname)
-          if (this.PcuList[k].PortList[i].Port_State === 0) {
-            this.PcuList[k].PortList[i].Port_State = "OFF"
-          } else {
-            this.PcuList[k].PortList[i].Port_State = "ON"
-          }
+    async ReloadPage(k) {
+      for (let i = 0; i < 8; i++) {
+        this.PcuList[k].PortList[i].Port_State = await Get_port_state(i, this.PcuList[k].hostname)
+        if (this.PcuList[k].PortList[i].Port_State === 0) {
+          this.PcuList[k].PortList[i].Port_State = "OFF"
+        } else {
+          this.PcuList[k].PortList[i].Port_State = "ON"
         }
       }
-      this.$forceUpdate()
+
+    this.$forceUpdate()
     },
 
-    async get_port_measures() {
-      for(let k=0; k < config.numberOfSystem; k++) {
-        this.Port_Measures = await Get_port_instant(this.PcuList[k].hostname)
-        this.PcuList[k].PortList[0].PowerAvg = this.Port_Measures.port_0.port_power
-        this.PcuList[k].PortList[1].PowerAvg = this.Port_Measures.port_1.port_power
-        this.PcuList[k].PortList[2].PowerAvg = this.Port_Measures.port_2.port_power
-        this.PcuList[k].PortList[3].PowerAvg = this.Port_Measures.port_3.port_power
-        this.PcuList[k].PortList[4].PowerAvg = this.Port_Measures.port_4.port_power
-        this.PcuList[k].PortList[5].PowerAvg = this.Port_Measures.port_5.port_power
-        this.PcuList[k].PortList[6].PowerAvg = this.Port_Measures.port_6.port_power
-        this.PcuList[k].PortList[7].PowerAvg = this.Port_Measures.port_7.port_power
+    async get_port_measures(hostname_number) {
+      this.Port_Measures = await Get_port_instant(this.PcuList[hostname_number].hostname)
+      this.PcuList[hostname_number].PortList[0].PowerAvg = this.Port_Measures.port_0.port_power
+      this.PcuList[hostname_number].PortList[1].PowerAvg = this.Port_Measures.port_1.port_power
+      this.PcuList[hostname_number].PortList[2].PowerAvg = this.Port_Measures.port_2.port_power
+      this.PcuList[hostname_number].PortList[3].PowerAvg = this.Port_Measures.port_3.port_power
+      this.PcuList[hostname_number].PortList[4].PowerAvg = this.Port_Measures.port_4.port_power
+      this.PcuList[hostname_number].PortList[5].PowerAvg = this.Port_Measures.port_5.port_power
+      this.PcuList[hostname_number].PortList[6].PowerAvg = this.Port_Measures.port_6.port_power
+      this.PcuList[hostname_number].PortList[7].PowerAvg = this.Port_Measures.port_7.port_power
 
-        for (let i = 0; i < 8; i++) {
-          this.PcuList[k].PortList[i].PowerAvg = this.PcuList[k].PortList[i].PowerAvg.toPrecision(4)
-        }
-        this.$forceUpdate()
+      for (let i = 0; i < 8; i++) {
+        this.PcuList[hostname_number].PortList[i].PowerAvg = this.PcuList[hostname_number].PortList[i].PowerAvg.toPrecision(4)
       }
-
+      this.$forceUpdate()
     },
     reset_data_graph(){
       this.Powervalue = {}
       this.PowervalueChart = {}
     },
-    async get_port_measures_last_hour() {
-      for(let h=0; h < config.numberOfSystem; h++) {
-        this.start_date_last_hour = new Date()
-        this.get_info = true
-        this.reset_data_graph()
-        const end_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
-          this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
+    async get_port_measures_last_hour(hostname_number) {
+      this.start_date_last_hour = new Date()
+      this.get_info = true
+      this.reset_data_graph()
+      const end_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
+        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
-        this.start_date_last_hour.setHours((this.start_date_last_hour.getHours() - 1))
-        const start_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
-          (this.start_date_last_hour.getHours()) + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
+      this.start_date_last_hour.setHours((this.start_date_last_hour.getHours() - 1))
+      const start_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
+        (this.start_date_last_hour.getHours()) + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
-        for (let k = 0; k < 8; k++) {
-          this.Measures = {}
-          this.PowervalueChart = {}
-          this.Measures = await Get_port_data(k, start_datetime, end_datetime, 60, this.PcuList[h].hostname)
-          this.Date_data = Object.keys(this.Measures)
-          let Date_data_array = this.Date_data
-          let Date_data_array_update = {}
-          this.Power = {}
-          for (let i = 0; i < Object.keys(this.Measures).length; i++) {
-            this.Power = this.Measures[this.Date_data[i]]
-            this.Powervalue[Date_data_array[i]] = (this.Power["power"])
-            Date_data_array_update[i] = Date_data_array[i].replace("T", ":")
-            Date_data_array_update[i] = Date_data_array_update[i].replace("Z", "")
-            this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
-          }console.log( this.PowervalueChart8[h][k])
-          this.PowervalueChart8[h][k].data = this.PowervalueChart
-        }
+      for (let k = 0; k < 8; k++) {
+        this.Measures = {}
+        this.PowervalueChart = {}
+        this.Measures = await Get_port_data(k, start_datetime, end_datetime, 60, this.PcuList[hostname_number].hostname)
+        this.Date_data = Object.keys(this.Measures)
+        let Date_data_array = this.Date_data
+        let Date_data_array_update = {}
+        this.Power = {}
+        for (let i = 0; i < Object.keys(this.Measures).length; i++) {
+          this.Power = this.Measures[this.Date_data[i]]
+          this.Powervalue[Date_data_array[i]] = (this.Power["power"])
+          Date_data_array_update[i] = Date_data_array[i].replace("T", ":")
+          Date_data_array_update[i] = Date_data_array_update[i].replace("Z", "")
+          this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
+        }console.log( this.PowervalueChart8[hostname_number][k])
+        this.PowervalueChart8[hostname_number][k].data = this.PowervalueChart
       }
-      this.$forceUpdate()
+    this.$forceUpdate()
     },
     //Get the token for the api
     get_Token(){
@@ -314,7 +308,7 @@ export default {
     //For multiple system
     setup_hostname(){
       for(let k=0; k < config.numberOfSystem; k++) {
-        const PortListTemp = {hostname:"",PortList:[{id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF', PowerAvg:0},
+        const PortListTemp = {hostname:"", hostname_number:k,PortList:[{id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF', PowerAvg:0},
             {id:('Port 1'), label: 'Port 1', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
             {id:('Port 2'), label: 'Port 2', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
             {id:('Port 3'), label: 'Port 3', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
@@ -333,12 +327,12 @@ export default {
   async mounted() {
     this.setup_hostname()
     this.get_Token()
-    await this.get_port_measures_last_hour()
     for(let i=0; i < config.numberOfSystem; i++){
-      await this.ReloadPage()
-      await this.get_port_measures()
-      this.timer = setInterval(this.ReloadPage, 6000)
-      this.timer2 = setInterval(this.get_port_measures, 1000)
+      await this.ReloadPage(i)
+      await this.get_port_measures(i)
+      await this.get_port_measures_last_hour(i)
+      this.timer = setInterval(this.ReloadPage, 6000,i)
+      this.timer2 = setInterval(this.get_port_measures, 1000,i)
     }
     this.$forceUpdate()
   },
