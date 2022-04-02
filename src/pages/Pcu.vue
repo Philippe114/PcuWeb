@@ -141,6 +141,7 @@
 
 
     </v-container>
+    <line-chart  :data="PowervalueChart8" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Ports Power" ></line-chart>
   </div>
 </template>
 
@@ -149,7 +150,7 @@ import {
   Get_port_avg,
   Get_port_state,
   Change_port_state,
-  Get_token, Get_port_instant
+  Get_token, Get_port_instant, Get_port_min, Get_port_max, Get_port_data, Get_port_change
 } from "../API";
 const config = require('../../src/config/hostname.json');
 
@@ -188,6 +189,10 @@ export default {
     token:[],
     Powervalue: {
     },
+    PowervalueChart:{},
+    PowervalueChart8:[{name:"Port 0", data:{}}, {name:"Port 1", data:{}}, {name:"Port 2", data:{}}, {name:"Port 3", data:{}},
+      {name:"Port 4", data:{}},{name:"Port 5", data:{}},{name:"Port 6", data:{}}, {name:"Port 7", data:{}},
+    ],
     Power: {},
     start_date: new Date(),
   }),
@@ -254,6 +259,43 @@ export default {
         }
         this.$forceUpdate()
       }
+
+    },
+    reset_data_graph(){
+      this.Powervalue = {}
+      this.PowervalueChart = {}
+    },
+    async get_port_measures_last_hour() {
+      for(let h=0; h < config.numberOfSystem; h++) {
+        this.start_date_last_hour = new Date()
+        this.get_info = true
+        this.reset_data_graph()
+        const end_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
+          this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+        this.start_date_last_hour.setHours((this.start_date_last_hour.getHours() - 1))
+        const start_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
+          (this.start_date_last_hour.getHours()) + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
+
+        for (let k = 0; k < 8; k++) {
+          this.Measures = {}
+          this.Measures = await Get_port_data(k, start_datetime, end_datetime, 60, this.PcuList[h].hostname)
+          this.Date_data = Object.keys(this.Measures)
+          let Date_data_array = this.Date_data
+          let Date_data_array_update = {}
+          this.Power = {}
+          for (let i = 0; i < Object.keys(this.Measures).length; i++) {
+            this.Power = this.Measures[this.Date_data[i]]
+            this.Powervalue[Date_data_array[i]] = (this.Power["power"])
+            Date_data_array_update[i] = Date_data_array[i].replace("T", ":")
+            Date_data_array_update[i] = Date_data_array_update[i].replace("Z", "")
+            this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
+          }
+          this.PowervalueChart8[k].data = this.PowervalueChart
+          console.log(this.PowervalueChart8)
+        }
+      }
+      this.$forceUpdate()
     },
     //Get the token for the api
     get_Token(){
@@ -289,6 +331,7 @@ export default {
   async mounted() {
     this.setup_hostname()
     this.get_Token()
+    await this.get_port_measures_last_hour()
     for(let i=0; i < config.numberOfSystem; i++){
       await this.ReloadPage()
       await this.get_port_measures()

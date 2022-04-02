@@ -502,8 +502,6 @@ export default {
         this.Port_ChangeValueList = (this.Port_Change[i][1])
         this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
       }
-
-
       this.$forceUpdate()
     },
   },
@@ -522,7 +520,8 @@ export default {
 
     data:() =>{
       return {
-        test:[],
+        TEST:[{name:"test1", data:{'1':8,'2':6}}, {name:"test2", data:{'1':5,'2':10}
+        }],
         hostname: sessionStorage.getItem("hostname"),
         Power_checkbox : true,
         token:"",
