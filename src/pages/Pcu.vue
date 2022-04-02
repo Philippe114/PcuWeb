@@ -87,7 +87,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ;Change_port_state1(item.label,item.Port_State,hostname);"
+                  @click="item.dialogON = false ;Change_port_state1(item.label,'ON',hostname);"
                 >
                   Yes
                 </v-btn>
@@ -120,7 +120,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ; Change_port_state1(item.label,item.Port_State,hostname);"
+                  @click="item.dialogOFF = false ; Change_port_state1(item.label,'OFF',hostname);"
                 >
                   Yes
                 </v-btn>
@@ -195,11 +195,6 @@ export default {
 
     //Function to change the port state. Need the token from login to work.
     async Change_port_state1(Port_number, Port_state,hostname) {
-      if (Port_state === "OFF") {
-        Port_state = "ON"
-      } else {
-        Port_state = "OFF"
-      }
       for(let i=0; i < config.numberOfSystem; i++){
         if( hostname === this.PcuList[i]){
           let port_number = parseInt(Port_number.substr(4, 5))
