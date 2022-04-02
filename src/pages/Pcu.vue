@@ -279,6 +279,7 @@ export default {
 
         for (let k = 0; k < 8; k++) {
           this.Measures = {}
+          this.PowervalueChart = {}
           this.Measures = await Get_port_data(k, start_datetime, end_datetime, 60, this.PcuList[h].hostname)
           this.Date_data = Object.keys(this.Measures)
           let Date_data_array = this.Date_data
