@@ -9,8 +9,8 @@
       </v-flex>
 
 
-
-      <v-layout row warp class="square_port" justify-center justify-space-around v-for="hostname in PcuList" :key="hostname.id" >
+      <v-container  v-for="hostname in PcuList" :key="hostname.id">
+      <v-layout row warp class="square_port" justify-center justify-space-around >
         <h1>{{hostname.hostname}}</h1>
         <li class="column_port"  style="list-style-type: none" v-for="item in hostname.PortList" :key="item.id" >
           <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname);item.dialogChangePage = true" >{{item.label}}</v-btn>
@@ -136,12 +136,13 @@
         >
           Not connected
         </v-snackbar>
-      </v-layout>
 
+      </v-layout>
+        <line-chart  :data="PowervalueChart8[0]" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Ports Power" ></line-chart>
+      </v-container>
 
 
     </v-container>
-    <line-chart  :data="PowervalueChart8" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Ports Power" ></line-chart>
   </div>
 </template>
 
@@ -190,8 +191,9 @@ export default {
     Powervalue: {
     },
     PowervalueChart:{},
-    PowervalueChart8:[{name:"Port 0", data:{}}, {name:"Port 1", data:{}}, {name:"Port 2", data:{}}, {name:"Port 3", data:{}},
-      {name:"Port 4", data:{}},{name:"Port 5", data:{}},{name:"Port 6", data:{}}, {name:"Port 7", data:{}},
+    PowervalueChart8:[[{name:"Port 0", data:{}}, {name:"Port 1", data:{}}, {name:"Port 2", data:{}}, {name:"Port 3", data:{}},
+      {name:"Port 4", data:{}},{name:"Port 5", data:{}},{name:"Port 6", data:{}}, {name:"Port 7", data:{}}], [{name:"Port 0", data:{}}, {name:"Port 1", data:{}}, {name:"Port 2", data:{}}, {name:"Port 3", data:{}},
+      {name:"Port 4", data:{}},{name:"Port 5", data:{}},{name:"Port 6", data:{}}, {name:"Port 7", data:{}}],
     ],
     Power: {},
     start_date: new Date(),
@@ -291,9 +293,8 @@ export default {
             Date_data_array_update[i] = Date_data_array[i].replace("T", ":")
             Date_data_array_update[i] = Date_data_array_update[i].replace("Z", "")
             this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
-          }
-          this.PowervalueChart8[k].data = this.PowervalueChart
-          console.log(this.PowervalueChart8)
+          }console.log( this.PowervalueChart8[h][k])
+          this.PowervalueChart8[h][k].data = this.PowervalueChart
         }
       }
       this.$forceUpdate()
