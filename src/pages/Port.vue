@@ -16,7 +16,7 @@
       <div class="btn_port">
         <v-btn v-if="Port_state ==='ON'" color="#7CFC00" class="btn_ON" >{{ Port_state }}
         </v-btn>
-        <v-btn v-else-if="Port_state ==='OFF'" color="#FFFFFF" class="btn_OFF"  >{{ Port_state }}
+        <v-btn v-else-if="Port_state ==='OFF'" color="#FFFFFF" class="btn_OFF" >{{ Port_state }}
         </v-btn>
       </div>
       <h1 class="state">
@@ -297,8 +297,7 @@ export default {
         return label
       }
     },
-    async get_port_measures(port_number, start_date, end_date,start_time,end_time,period) {
-      this.get_info = true
+    reset_data_graph(){
       this.Powervalue = {}
       this.PowervalueChart = {}
       this.Currentvalue = {}
@@ -306,6 +305,10 @@ export default {
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
       this.Port_ChangeChart = {}
+    },
+    async get_port_measures(port_number, start_date, end_date,start_time,end_time,period) {
+      this.get_info = true
+      this.reset_data_graph()
       const start_datetime= start_date+"T"+start_time.toString()+":00.000Z"
       const end_datetime = end_date+"T"+end_time.toString()+":00.000Z"
       this.Port_Measures = await Get_port_avg(port_number, start_datetime, end_datetime,period,this.hostname)
@@ -332,6 +335,10 @@ export default {
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
 
+        if( i === (Object.keys(this.Measures).length-1)){
+          this.Port_ChangeChart[Date_data_array_update[i]] = null
+        }
+
       }
       this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
 
@@ -350,13 +357,7 @@ export default {
       this.period = period
       this.start_date_last_hour = new Date()
       this.get_info = true
-      this.Powervalue = {}
-      this.PowervalueChart = {}
-      this.Currentvalue = {}
-      this.Voltagevalue = {}
-      this.CurrentvalueChart = {}
-      this.VoltagevalueChart = {}
-      this.Port_ChangeChart = {}
+      this.reset_data_graph()
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
@@ -388,6 +389,9 @@ export default {
         this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
+        if( i === (Object.keys(this.Measures).length-1)){
+          this.Port_ChangeChart[Date_data_array_update[i]] = null
+        }
       }
       this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
       for(let i = 0; i < this.Port_Change.length; i++) {
@@ -405,13 +409,7 @@ export default {
       this.period = period
       this.start_date_last_hour = new Date()
       this.get_info = true
-      this.Powervalue = {}
-      this.PowervalueChart = {}
-      this.Currentvalue = {}
-      this.Voltagevalue = {}
-      this.CurrentvalueChart = {}
-      this.VoltagevalueChart = {}
-      this.Port_ChangeChart = {}
+      this.reset_data_graph()
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
       this.start_date_last_hour.setMinutes((this.start_date_last_hour.getMinutes()-5))
@@ -431,9 +429,7 @@ export default {
       let Date_data_array = this.Date_data
       let Date_data_array_update = {}
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
-
         this.Power = this.Measures[this.Date_data[i]]
-
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
         this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
@@ -442,6 +438,10 @@ export default {
         this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
+        if( i === (Object.keys(this.Measures).length-1)){
+          this.Port_ChangeChart[Date_data_array_update[i]] = null
+        }
+
       }
       this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
       for(let i = 0; i < this.Port_Change.length; i++) {
@@ -459,13 +459,7 @@ export default {
       this.period = period
       this.start_date_last_hour = new Date()
       this.get_info = true
-      this.Powervalue = {}
-      this.PowervalueChart = {}
-      this.Currentvalue = {}
-      this.Voltagevalue = {}
-      this.CurrentvalueChart = {}
-      this.VoltagevalueChart = {}
-      this.Port_ChangeChart = {}
+      this.reset_data_graph()
       const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
         this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
       this.start_date_last_hour.setDate((this.start_date_last_hour.getDate()-1))
@@ -495,6 +489,10 @@ export default {
         this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
+
+        if( i === (Object.keys(this.Measures).length-1)){
+          this.Port_ChangeChart[Date_data_array_update[i]] = null
+        }
       }
       this.Port_Change = await Get_port_change(port_number, start_datetime, end_datetime,period,this.hostname)
       for(let i = 0; i < this.Port_Change.length; i++) {
@@ -566,10 +564,6 @@ export default {
         Voltagevalue: {},
         VoltagevalueChart: {},
         Power: {},
-        ChartOptions: {
-          yAxes:[{mirror:true,ticks:{min:5}}],
-          xAxes:[{type:'time',time:{unit:'minute'}}]
-        },
       }
     }
   }
@@ -577,14 +571,6 @@ export default {
 </script>
 
 <style scoped>
-.ON{
-  background: #7CFC00 !important;
-  opacity: 1 !important;
-  min-width: 44px !important;
-  display: flex !important;
-  justify-content: center !important;
-
-}
 .btn_ON{
   display: flex;
   min-width: 44px;

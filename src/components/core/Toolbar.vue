@@ -116,7 +116,7 @@ export default {
           sessionStorage.setItem(tokenStorage.toString(), this.token[i])
           sessionStorage.setItem("logged", this.logged)
         }
-      } location.reload()
+      }
     },
     setup_hostname(){
       for(let i=0; i < config.numberOfSystem; i++){

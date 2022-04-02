@@ -50,9 +50,9 @@
 
           <div class="btn_toggle">
             <Span class="port_state_span" >Port State:</Span>
-            <v-btn v-if="item.Port_State ==='ON'" color="#7CFC00" class="btn_ON" >{{ item.Port_State }}
+            <v-btn v-if="item.Port_State ==='ON'" color="#7CFC00" class="btn_ON" flat>{{ item.Port_State }}
             </v-btn>
-            <v-btn v-else-if="item.Port_State ==='OFF'" color="#FFFFFF" class="btn_OFF"  >{{ item.Port_State }}
+            <v-btn v-else-if="item.Port_State ==='OFF'" color="#000000" class="btn_OFF" flat >{{ item.Port_State }}
             </v-btn>
           </div>
           <div class="btn_toggle">
@@ -87,7 +87,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ; item.Port_State = onClickBtn('OFF');Change_port_state1(item.label,item.Port_State,hostname);"
+                  @click="item.dialogON = false ;Change_port_state1(item.label,item.Port_State,hostname);"
                 >
                   Yes
                 </v-btn>
@@ -120,7 +120,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ;item.Port_State = onClickBtn('ON'); Change_port_state1(item.label,item.Port_State,hostname);"
+                  @click="item.dialogOFF = false ; Change_port_state1(item.label,item.Port_State,hostname);"
                 >
                   Yes
                 </v-btn>
@@ -129,6 +129,13 @@
           </v-dialog>
           <span class="Power">Power avg: {{item.PowerAvg}} W</span>
         </li>
+
+        <v-snackbar
+          color="#D2691E"
+          v-model="snackbar_notconnected"
+        >
+          Not connected
+        </v-snackbar>
       </v-layout>
 
 
@@ -167,8 +174,10 @@ export default {
       {id:('Port 6'), label: 'Port 6', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
       {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0}
     ],
+    snackbar_notconnected:false,
     timer: '',
     timer2: '',
+    timerGetToken:'',
     Measures: {},
     Port_Measures: {},
     Date_data: {},
@@ -184,23 +193,22 @@ export default {
   }),
   methods: {
 
+    //Function to change the port state. Need the token from login to work.
     async Change_port_state1(Port_number, Port_state,hostname) {
+      if (Port_state === "OFF") {
+        Port_state = "ON"
+      } else {
+        Port_state = "OFF"
+      }
       for(let i=0; i < config.numberOfSystem; i++){
         if( hostname === this.PcuList[i]){
           let port_number = parseInt(Port_number.substr(4, 5))
           await Change_port_state(this.token[i],port_number, Port_state,hostname.hostname)
-        }
+        }await this.ReloadPage()
       }
     },
-    onClickBtn(label) {
-      if (label === "OFF") {
-        label = "ON"
-        return label
-      } else {
-        label = "OFF"
-        return label
-      }
-    },
+
+    //Function to store data for Port.vue
     onClickPort(Port_number, Port_state, hostname) {
       const port_number = parseInt(Port_number.substr(4,5))
       sessionStorage.setItem("port_number", port_number)
@@ -233,6 +241,7 @@ export default {
       }
       this.$forceUpdate()
     },
+
     async get_port_measures() {
       for(let k=0; k < config.numberOfSystem; k++) {
         this.Port_Measures = await Get_port_instant(this.PcuList[k].hostname)
@@ -251,13 +260,19 @@ export default {
         this.$forceUpdate()
       }
     },
+    //Get the token for the api
     get_Token(){
       for(let i=0; i < config.numberOfSystem; i++){
         let tokenStorage = "token"+i
         this.token[i] = sessionStorage.getItem(tokenStorage.toString())
-        console.log(this.token[i])
+        if(this.token[0] === null){
+          this.snackbar_notconnected = true
+          this.timerGetToken = setTimeout(this.get_Token, 2000)
+        }else{
+        }
       }
     },
+    //For multiple system
     setup_hostname(){
       for(let k=0; k < config.numberOfSystem; k++) {
         const PortListTemp = {hostname:"",PortList:[{id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF', PowerAvg:0},
@@ -282,7 +297,7 @@ export default {
     for(let i=0; i < config.numberOfSystem; i++){
       await this.ReloadPage()
       await this.get_port_measures()
-      this.timer = setInterval(this.ReloadPage, 6000 )
+      this.timer = setInterval(this.ReloadPage, 6000)
       this.timer2 = setInterval(this.get_port_measures, 1000)
     }
     this.$forceUpdate()
@@ -329,7 +344,6 @@ export default {
   margin-left: 10px;
   margin-top: 0px;
   pointer-events: none;
-  background: #FFFFFF !important;
 }
 .btn_change_page{
   display: flex;
@@ -337,7 +351,7 @@ export default {
 
 }
 .port_state_span{
-
+  margin-top: 5px;
 }
 .column_port > .text {
   color: black;

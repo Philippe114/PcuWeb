@@ -14,18 +14,18 @@
     <v-list>
 
 
-      <v-list-tile @click="changeRoute('Pcu', 2)">
+      <v-list-tile @click="changeRoute('Pcu', 1)">
         <v-list-tile-action>
           <v-icon>dashboard</v-icon>
         </v-list-tile-action>
-        <v-list-tile-title :class="[{'active': selectedIndex === 2}, 'item-title' ]"> {{ $t('Dashboard') }}</v-list-tile-title>
+        <v-list-tile-title :class="[{'active': selectedIndex === 1}, 'item-title' ]"> {{ $t('Dashboard') }}</v-list-tile-title>
       </v-list-tile>
 
-      <v-list-tile @click="changeRoute('Settings', 1)">
+      <v-list-tile @click="changeRoute('Settings', 2)">
         <v-list-tile-action>
           <v-icon>settings</v-icon>
         </v-list-tile-action>
-        <v-list-tile-title :class="[{'active': selectedIndex === 1}, 'item-title' ]" >{{ $t('Settings') }}</v-list-tile-title>
+        <v-list-tile-title :class="[{'active': selectedIndex === 2}, 'item-title' ]" >{{ $t('Settings') }}</v-list-tile-title>
       </v-list-tile>
 
     </v-list>
