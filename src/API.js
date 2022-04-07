@@ -21,7 +21,7 @@ export const Get_token = async function(password,hostname) {
 }
 export const Modify_password = async function(password,token,hostname) {
   const req = new Request(
-    `http://${hostname}.local:5000/login/modify/${password}`,
+    `http://${hostname}.local:5000/config/password/${password}`,
     {
       method: "PUT",
       crossDomain: true,
@@ -39,7 +39,7 @@ export const Modify_password = async function(password,token,hostname) {
 export const Modify_reference_voltage = async function(reference_voltage,token,hostname) {
   console.log(reference_voltage)
   const req = new Request(
-    `http://${hostname}.local:5000/adc/reference_voltage/${reference_voltage}`,
+    `http://${hostname}.local:5000/config/reference_voltage/${reference_voltage}`,
     {
       method: "PUT",
       crossDomain:true,
@@ -55,24 +55,83 @@ export const Modify_reference_voltage = async function(reference_voltage,token,h
   console.log(res)
   return (await res.json())
 }
-  export const Change_location_db = async function(mem_type,token,hostname) {
-  console.log(mem_type)
-    const req = new Request(
-    `http://${hostname}.local:5000/record/memory_type/${mem_type}`,
-  {
-    method: "PUT",
-    crossDomain:true,
-    headers: {
-    "Origin": "http://localhost:8080",
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin":"*",
-    Authorization :token,
-  },
-  }
-    )
-    const res = await fetch(req)
-    return (await res.json())
-  }
+
+export const Change_location_db = async function(mem_type,token,hostname) {
+console.log(mem_type)
+  const req = new Request(
+  `http://${hostname}.local:5000/config/memory_type/${mem_type}`,
+{
+  method: "PUT",
+  crossDomain:true,
+  headers: {
+  "Origin": "http://localhost:8080",
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin":"*",
+  Authorization :token,
+},
+}
+  )
+  const res = await fetch(req)
+  return (await res.json())
+}
+
+export const Modify_logging_port = async function(logging_port,token,hostname) {
+  console.log(logging_port)
+  const req = new Request(
+    `http://${hostname}.local:5000/config/log_port/${logging_port}`,
+    {
+      method: "PUT",
+      crossDomain:true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin":"*",
+        Authorization :token,
+      },
+    }
+  )
+  const res = await fetch(req)
+  console.log(res)
+  return (await res.json())
+}
+export const Modify_logging_ip = async function(logging_ip,token,hostname) {
+  console.log(logging_ip)
+  const req = new Request(
+    `http://${hostname}.local:5000/config/log_ip/${logging_ip}`,
+    {
+      method: "PUT",
+      crossDomain:true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin":"*",
+        Authorization :token,
+      },
+    }
+  )
+  const res = await fetch(req)
+  console.log(res)
+  return (await res.json())
+}
+export const Reboot_rpi = async function(token,hostname) {
+  const req = new Request(
+    `http://${hostname}.local:5000/config/reboot`,
+    {
+      method: "PUT",
+      crossDomain:true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin":"*",
+        Authorization :token,
+      },
+    }
+  )
+  const res = await fetch(req)
+  console.log(res)
+  return (await res.json())
+}
+
 
 export const Get_port_max = async function(Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
