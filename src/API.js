@@ -196,6 +196,27 @@ export const Get_port_data = async function (Port_number,start_datetime,end_date
   return (await res.json()).measures
   }
 
+export const Get_port_data_avgMinMax = async function (Port_number,start_datetime,end_datetime,period,hostname) {
+  sessionStorage.setItem("port_number", Port_number)
+  //let port_number = parseInt(Port_number.substr(4,5))
+  let start_timefull = start_datetime.toString()
+  let end_timefull = end_datetime.toString()
+  const req = new Request(
+    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    {
+      method: "GET",
+      crossDomain:true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin":"*",
+      },
+    }
+  )
+  const res = await fetch(req)
+  return (await res.json())
+}
+
 export const Get_port_avg = async function (Port_number,start_datetime,end_datetime,period,hostname) {
   sessionStorage.setItem("port_number", Port_number)
  // let port_number = parseInt(Port_number.substr(4, 5))

@@ -96,7 +96,7 @@ export default {
     for(let i=0; i < config.numberOfSystem; i++) {
       this.PcuList[i] = config.hostnameSystem[i]
       let tokenStorage = "token" + i
-      this.token[i] = sessionStorage.getItem(tokenStorage.toString())
+      this.token[i] = localStorage.getItem(tokenStorage.toString())
     }
     },
   methods: {

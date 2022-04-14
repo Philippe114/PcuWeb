@@ -214,18 +214,18 @@ export default {
     //Function to store data for Port.vue
     onClickPort(Port_number, Port_state, hostname) {
       const port_number = parseInt(Port_number.substr(4,5))
-      sessionStorage.setItem("port_number", port_number)
-      sessionStorage.setItem("port_state", Port_state)
-      sessionStorage.setItem("hostname", hostname.hostname)
+      localStorage.setItem("port_number", port_number)
+      localStorage.setItem("port_state", Port_state)
+      localStorage.setItem("hostname", hostname.hostname)
       for(let i=0; i < config.numberOfSystem; i++){
         if( hostname === this.PcuList[i]){
-          sessionStorage.setItem("token", this.token[i])
+          localStorage.setItem("token", this.token[i])
         }
       }
       if (Port_state === "OFF") {
-        sessionStorage.setItem("btn_active", "OFF")
+        localStorage.setItem("btn_active", "OFF")
       } else {
-        sessionStorage.setItem("btn_active", "ON")
+        localStorage.setItem("btn_active", "ON")
       }
     },
     cancelAutoUpdate() {
@@ -278,7 +278,7 @@ export default {
       for (let k = 0; k < 8; k++) {
         this.Measures = {}
         this.PowervalueChart = {}
-        this.Measures = await Get_port_data(k, start_datetime, end_datetime, 60, this.PcuList[hostname_number].hostname)
+        this.Measures = await Get_port_data(k, start_datetime, end_datetime, 300, this.PcuList[hostname_number].hostname)
         this.Date_data = Object.keys(this.Measures)
         let Date_data_array = this.Date_data
         let Date_data_array_update = {}
@@ -298,12 +298,12 @@ export default {
     get_Token(){
       for(let i=0; i < config.numberOfSystem; i++){
         let tokenStorage = "token"+i
-        this.token[i] = sessionStorage.getItem(tokenStorage.toString())
-        if(this.token[0] === null){
-          this.snackbar_notconnected = true
-          this.timerGetToken = setTimeout(this.get_Token, 2000)
-        }else{
-        }
+        this.token[i] = localStorage.getItem(tokenStorage.toString())
+        //if(this.token[0] === null){
+          //this.snackbar_notconnected = true
+          //this.timerGetToken = setTimeout(this.get_Token, 2000)
+        //}else{
+        //}
       }
     },
     //For multiple system
@@ -323,6 +323,9 @@ export default {
     },
   },
   beforeDestroy() {
+    clearInterval(this.timer)
+    clearInterval(this.timer2)
+    clearInterval(this.timer8Ports)
     this.cancelAutoUpdate();
   },
   async mounted() {
@@ -354,36 +357,36 @@ export default {
 .btn_toggle{
   display: flex;
   width: 10px ;
-  margin-left: 20px;
+  margin-left:15%;
 }
 .btn_ON{
   display: flex;
   min-width: 44px;
   opacity: 1 !important;
   max-width: 44px;
-  margin-left: 10px;
+  margin-left:100%;
   pointer-events: none;
   margin-top: 0px
 }
 .btn_ON_OFF{
   display: flex;
-  min-width: 44px;
-  max-width: 44px;
-  margin-left: 15px;
+  min-width: 30px;
+  max-width: 30px;
+  margin-left:200%;
   margin-top: 8px
 }
 
 .btn_OFF{
   display: flex;
-  min-width: 44px;
-  max-width: 44px;
-  margin-left: 10px;
+  min-width: 30px;
+  max-width: 30px;
+  margin-left:100%;
   margin-top: 0px;
   pointer-events: none;
 }
 .btn_change_page{
   display: flex;
-  margin-left: 45px;
+  margin-left:25%;
 
 }
 .port_state_span{
@@ -396,6 +399,7 @@ export default {
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  margin-left:10%;
 }
 .square_port{
   white-space: nowrap;
