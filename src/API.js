@@ -1,7 +1,7 @@
 export const Get_token = async function(password,hostname) {
   //let port_number = parseInt(Port_number.substr(4,5))
   const req = new Request(
-    `http://${hostname}.local:5000/login/${password}`,
+    `http://${hostname}:5000/login/${password}`,
     {
       method: "GET",
       crossDomain:true,
@@ -21,7 +21,7 @@ export const Get_token = async function(password,hostname) {
 }
 export const Modify_password = async function(password,token,hostname) {
   const req = new Request(
-    `http://${hostname}.local:5000/config/password/${password}`,
+    `http://${hostname}:5000/config/password/${password}`,
     {
       method: "PUT",
       crossDomain: true,
@@ -39,7 +39,7 @@ export const Modify_password = async function(password,token,hostname) {
 export const Modify_reference_voltage = async function(reference_voltage,token,hostname) {
   console.log(reference_voltage)
   const req = new Request(
-    `http://${hostname}.local:5000/config/reference_voltage/${reference_voltage}`,
+    `http://${hostname}:5000/config/reference_voltage/${reference_voltage}`,
     {
       method: "PUT",
       crossDomain:true,
@@ -59,7 +59,7 @@ export const Modify_reference_voltage = async function(reference_voltage,token,h
 export const Change_location_db = async function(mem_type,token,hostname) {
 console.log(mem_type)
   const req = new Request(
-  `http://${hostname}.local:5000/config/memory_type/${mem_type}`,
+  `http://${hostname}:5000/config/memory_type/${mem_type}`,
 {
   method: "PUT",
   crossDomain:true,
@@ -78,7 +78,7 @@ console.log(mem_type)
 export const Modify_logging_port = async function(logging_port,token,hostname) {
   console.log(logging_port)
   const req = new Request(
-    `http://${hostname}.local:5000/config/log_port/${logging_port}`,
+    `http://${hostname}:5000/config/log_port/${logging_port}`,
     {
       method: "PUT",
       crossDomain:true,
@@ -97,7 +97,7 @@ export const Modify_logging_port = async function(logging_port,token,hostname) {
 export const Modify_logging_ip = async function(logging_ip,token,hostname) {
   console.log(logging_ip)
   const req = new Request(
-    `http://${hostname}.local:5000/config/log_ip/${logging_ip}`,
+    `http://${hostname}:5000/config/log_ip/${logging_ip}`,
     {
       method: "PUT",
       crossDomain:true,
@@ -115,7 +115,7 @@ export const Modify_logging_ip = async function(logging_ip,token,hostname) {
 }
 export const Reboot_rpi = async function(token,hostname) {
   const req = new Request(
-    `http://${hostname}.local:5000/config/reboot`,
+    `http://${hostname}:5000/config/reboot`,
     {
       method: "PUT",
       crossDomain:true,
@@ -139,7 +139,7 @@ export const Get_port_max = async function(Port_number,start_datetime,end_dateti
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -160,7 +160,7 @@ export const Get_port_min = async function(Port_number,start_datetime,end_dateti
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -181,7 +181,7 @@ export const Get_port_data = async function (Port_number,start_datetime,end_date
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -202,7 +202,7 @@ export const Get_port_data_avgMinMax = async function (Port_number,start_datetim
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -223,7 +223,7 @@ export const Get_port_avg = async function (Port_number,start_datetime,end_datet
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain: true,
@@ -244,7 +244,7 @@ export const Get_port_change = async function(Port_number,start_datetime,end_dat
   let start_timefull = start_datetime.toString()
   let end_timefull = end_datetime.toString()
   const req = new Request(
-    `http://${hostname}.local:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
+    `http://${hostname}:5000/record/port/${Port_number}/start_time/${start_timefull}/end_time/${end_timefull}/period/${period}`,
     {
       method: "GET",
       crossDomain:true,
@@ -269,7 +269,7 @@ export const Get_port_state = async function (Port_number,hostname) {
     port_number = Port_number
   }
   const req = new Request(
-    `http://${hostname}.local:5000/port/${port_number}/state`,
+    `http://${hostname}:5000/port/${port_number}/state`,
     {
       method: "GET",
       crossDomain: true,
@@ -296,7 +296,7 @@ export const Change_port_state =  async function(token,Port_number, Port_state,h
     port_state = 1
   }
   const req = new Request(
-    `http://${hostname}.local:5000/port/state`,
+    `http://${hostname}:5000/port/state`,
     {
       method: "PUT",
       crossDomain:true,
@@ -317,7 +317,7 @@ export const Change_port_state =  async function(token,Port_number, Port_state,h
 
 export const Get_port_instant = async function (hostname) {
   const req = new Request(
-    `http://${hostname}.local:5000/record/instant`,
+    `http://${hostname}:5000/record/instant`,
     {
       method: "GET",
       crossDomain: true,

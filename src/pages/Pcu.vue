@@ -1,13 +1,6 @@
 <template>
   <div>
     <v-container>
-      <v-flex xs12 sm3>
-        <v-btn @click="ReloadPage()" flat icon dark large color="blue">
-          <v-icon>cached</v-icon>
-        </v-btn>
-
-      </v-flex>
-
 
       <v-container  v-for="hostname in PcuList" :key="hostname.id">
       <v-layout row warp class="square_port" justify-center justify-space-around >
