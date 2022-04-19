@@ -6,7 +6,7 @@
       <v-layout row warp class="square_port" justify-center justify-space-around >
         <h1>{{hostname.hostname}}</h1>
         <li class="column_port"  style="list-style-type: none" v-for="item in hostname.PortList" :key="item.id" >
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname);item.dialogChangePage = true" >{{item.label}}</v-btn>
+          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname.hostname);item.dialogChangePage = true" >{{item.label}}</v-btn>
           <v-dialog
             v-model="item.dialogChangePage"
             max-width="290"
@@ -80,7 +80,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ;Change_port_state1(item.label,'ON',hostname);"
+                  @click="item.dialogON = false ;Change_port_state1(item.label,'ON',hostname.hostname);"
                 >
                   Yes
                 </v-btn>
@@ -113,7 +113,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ; Change_port_state1(item.label,'OFF',hostname);"
+                  @click="item.dialogOFF = false ; Change_port_state1(item.label,'OFF',hostname.hostname);"
                 >
                   Yes
                 </v-btn>
@@ -131,7 +131,7 @@
         </v-snackbar>
 
       </v-layout>
-        <line-chart  :data="PowervalueChart8[hostname.hostname_number]" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 1}"  :min="0" title="Ports Power" ></line-chart>
+<!--        <line-chart  :data="PowervalueChart8[hostname.hostname_number]" :colors="['#8b47d8','#800000', '#000080', '#008000','#FF0000', '#000000', '#FFD700','#D2691E']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 1}"  :min="0" title="Ports Power" ></line-chart>-->
       </v-container>
 
 
@@ -195,12 +195,13 @@ export default {
   methods: {
 
     //Function to change the port state. Need the token from login to work.
-    async Change_port_state1(Port_number, Port_state,hostname) {
+    async Change_port_state1(Port_number, Port_state, hostname) {
+      console.log(hostname)
       for(let i=0; i < config.numberOfSystem; i++){
-        if( hostname === this.PcuList[i]){
+        if(hostname === this.PcuList[i].hostname){
           let port_number = parseInt(Port_number.substr(4, 5))
-          await Change_port_state(this.token[i],port_number, Port_state,hostname.hostname)
-        }await this.ReloadPage()
+          await Change_port_state(this.token[i],port_number, Port_state,hostname)
+        }
       }
     },
 
@@ -209,9 +210,9 @@ export default {
       const port_number = parseInt(Port_number.substr(4,5))
       localStorage.setItem("port_number", port_number)
       localStorage.setItem("port_state", Port_state)
-      localStorage.setItem("hostname", hostname.hostname)
+      localStorage.setItem("hostname", hostname)
       for(let i=0; i < config.numberOfSystem; i++){
-        if( hostname === this.PcuList[i]){
+        if( hostname === this.PcuList[i].hostname){
           localStorage.setItem("token", this.token[i])
         }
       }
@@ -282,7 +283,7 @@ export default {
           Date_data_array_update[i] = Date_data_array[i].replace("T", ":")
           Date_data_array_update[i] = Date_data_array_update[i].replace("Z", "")
           this.PowervalueChart[Date_data_array_update[i]] = this.Powervalue[Date_data_array[i]]
-        }console.log( this.PowervalueChart8[hostname_number][k])
+        }
         this.PowervalueChart8[hostname_number][k].data = this.PowervalueChart
       }
     this.$forceUpdate()
@@ -322,15 +323,15 @@ export default {
     this.cancelAutoUpdate();
   },
   async mounted() {
-    this.setup_hostname()
+    await this.setup_hostname()
     this.get_Token()
     for(let i=0; i < config.numberOfSystem; i++){
       await this.ReloadPage(i)
       await this.get_port_measures(i)
-      await this.get_port_measures_last_hour(i)
+      // await this.get_port_measures_last_hour(i)
       this.timer = setInterval(this.ReloadPage, 6000,i)
       this.timer2 = setInterval(this.get_port_measures, 1000,i)
-      this.timer8Ports = setInterval(this.get_port_measures_last_hour, 60000,i)
+      // this.timer8Ports = setInterval(this.get_port_measures_last_hour, 60000,i)
     }
     this.$forceUpdate()
   },

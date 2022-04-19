@@ -331,4 +331,20 @@ export const Get_port_instant = async function (hostname) {
   const res = await fetch(req)
   return (await res.json())
 }
+export const Get_db_location = async function (hostname) {
+  const req = new Request(
+    `http://${hostname}:5000/config/memory_type`,
+    {
+      method: "GET",
+      crossDomain: true,
+      headers: {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  )
+  const res = await fetch(req)
+  return (await res.json())
+}
 

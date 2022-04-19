@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2 class="text_settings">Choose the system to modify :</h2>
+    <h1 class="text_settings">Choose the system to modify :</h1>
     <v-layout>
       <v-btn-toggle class="toggle_system" mandatory v-model="toggle_system">
       <v-btn v-for="item in PcuList" :key="item.name" @click="change_system(item.number)">
@@ -61,7 +61,7 @@
           </v-btn>
         </v-btn-toggle>
       </v-layout>
-    <h2 class="text_settings">For all systems :</h2>
+    <h1 class="text_settings">For all systems :</h1>
     <v-layout row wrap>
       <h2 class="text_settings">Modify logging port :</h2>
       <v-text-field  type="number" class="field_input" clearable color="black" small v-model="new_logport"></v-text-field>
@@ -96,7 +96,8 @@ import {
   Modify_logging_ip,
   Modify_logging_port,
   Modify_password,
-  Modify_reference_voltage, Reboot_rpi
+  Modify_reference_voltage, Reboot_rpi,
+  Get_db_location
 } from "../API";
 import config from "../config/hostname.json";
 
@@ -111,8 +112,18 @@ export default {
     }
   },
   async mounted() {
+    this.set_location_db()
     },
   methods: {
+    async set_location_db(){
+      const location_db = await Get_db_location(this.PcuList[this.activeSystem].name)
+      console.log(location_db)
+      if(location_db === "memory_type.ram"){
+        this.toggle_db = 0
+      }else{
+        this.toggle_db = 1
+      }
+    },
     async modify_password(password){
       if(password === ""){
         this.snackbar_empty = true

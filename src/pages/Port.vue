@@ -244,8 +244,8 @@
       ></v-text-field>
 
       <v-btn @click="get_port_measures(port_number,start_date,end_date,start_time_value,end_time_value,period)">Get info</v-btn>
-        <v-btn @click="get_port_measures_last_hour(port_number,30)">Last hour</v-btn>
         <v-btn @click="get_port_measures_last_5min(port_number,1)">Last 5 min</v-btn>
+        <v-btn @click="get_port_measures_last_hour(port_number,30)">Last hour</v-btn>
         <v-btn @click="get_port_measures_last_day(port_number,600)">Last Day</v-btn>
       </v-layout>
 
@@ -288,6 +288,7 @@ import {
   Change_port_state,
   Get_port_data_avgMinMax
 } from "../API";
+import config from "../config/hostname.json";
 
 
 export default {
@@ -347,7 +348,7 @@ export default {
         }
 
       }
-      this.Port_Change = this.Port_Measures["port_state"]
+      this.Port_Change = this.Port_Measures["port_states"]
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
         this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
@@ -398,7 +399,7 @@ export default {
         }
       }
 
-      this.Port_Change = this.Port_Measures["port_state"]
+      this.Port_Change = this.Port_Measures["port_states"]
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
         this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
@@ -422,7 +423,6 @@ export default {
       const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
         (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
       this.Port_Measures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
-      console.log(this.Port_Measures)
       this.Poweravg = (this.Port_Measures["avg_measure"]["power"]+"").slice(0,5)
       this.Powermin = (this.Port_Measures["min_measure"]["power"]+"").slice(0,5)
       this.Powermax = (this.Port_Measures["max_measure"]["power"]+"").slice(0,5)
@@ -446,7 +446,7 @@ export default {
         }
 
       }
-      this.Port_Change = this.Port_Measures["port_state"]
+      this.Port_Change = this.Port_Measures["port_states"]
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
         this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
@@ -470,7 +470,6 @@ export default {
         (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
       this.Port_Measures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
-      console.log( this.Port_Measures )
       this.Poweravg = (this.Port_Measures["avg_measure"]["power"]+"").slice(0,5)
       this.Powermin = (this.Port_Measures["min_measure"]["power"]+"").slice(0,5)
       this.Powermax = (this.Port_Measures["max_measure"]["power"]+"").slice(0,5)
@@ -496,7 +495,7 @@ export default {
           this.Port_ChangeChart[Date_data_array_update[i]] = null
         }
       }
-      this.Port_Change = this.Port_Measures["port_state"]
+      this.Port_Change = this.Port_Measures["port_states"]
       for(let i = 0; i < this.Port_Change.length; i++) {
         this.Port_ChangeList = (this.Port_Change[i][0])
         this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
@@ -516,6 +515,11 @@ export default {
       this.$forceUpdate()
 
     },
+    setup_hostname(){
+      for(let k=0; k < config.numberOfSystem; k++) {
+        this.PcuList[k].hostname = config.hostnameSystem[k]
+      }
+    },
   },
     beforeDestroy() {
       clearInterval(this.timer)
@@ -525,6 +529,13 @@ export default {
       this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
       this.end_time_value = (this.date.getHours() + ":" + this.date.getMinutes())
       this.Port_state = await Get_port_state(this.port_number,this.hostname)
+      //this.setup_hostname()
+      //console.log(this.PcuList)
+      //for(let i=0; i < config.numberOfSystem; i++){
+        //if( this.hostname === this.PcuList[i].hostname){
+        //  localStorage.setItem("token", this.token[i])
+       // }
+       // }
       this.token =  localStorage.getItem("token")
       console.log(this.token)
       if (this.Port_state === 0) {
@@ -540,6 +551,7 @@ export default {
       return {
         TEST:[{name:"test1", data:{'1':8,'2':6}}, {name:"test2", data:{'1':5,'2':10}
         }],
+        PcuList:[],
         hostname: localStorage.getItem("hostname"),
         Power_checkbox : true,
         token:"",
