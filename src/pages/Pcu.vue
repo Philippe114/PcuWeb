@@ -214,6 +214,7 @@ export default {
       for(let i=0; i < config.numberOfSystem; i++){
         if( hostname === this.PcuList[i].hostname){
           localStorage.setItem("token", this.token[i])
+          localStorage.setItem("systemActive", i.toString())
         }
       }
       if (Port_state === "OFF") {
@@ -363,7 +364,7 @@ export default {
   max-width: 44px;
   margin-left:100%;
   pointer-events: none;
-  margin-top: 0px
+  margin-top: -3px;
 }
 .btn_ON_OFF{
   display: flex;
@@ -378,7 +379,7 @@ export default {
   min-width: 30px;
   max-width: 30px;
   margin-left:100%;
-  margin-top: 0px;
+  margin-top: -3px;
   pointer-events: none;
 }
 .btn_change_page{

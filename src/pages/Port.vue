@@ -520,10 +520,18 @@ export default {
         this.PcuList[k].hostname = config.hostnameSystem[k]
       }
     },
+    get_Token(){
+        let tokenStorage = "token"+localStorage.getItem("systemActive")
+      console.log(tokenStorage)
+        this.token = localStorage.getItem(tokenStorage.toString())
+    },
   },
     beforeDestroy() {
       clearInterval(this.timer)
     },
+  beforeUpdate() {
+    this.get_Token()
+  },
 
     async mounted() {
       this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
