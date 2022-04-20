@@ -3,10 +3,10 @@
     <v-container>
 
       <v-container  v-for="hostname in PcuList" :key="hostname.id">
-      <v-layout row warp class="square_port" justify-center justify-space-around >
         <h1>{{hostname.hostname}}</h1>
+      <v-layout row warp class="square_port" justify-center justify-space-around >
         <li class="column_port"  style="list-style-type: none" v-for="item in hostname.PortList" :key="item.id" >
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname.hostname);item.dialogChangePage = true" >{{item.label}}</v-btn>
+          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname.hostname)"  :to="{ name: 'Port' }"  >{{item.label}}</v-btn>
           <v-dialog
             v-model="item.dialogChangePage"
             max-width="290"
@@ -316,6 +316,9 @@ export default {
       }
     },
   },
+  beforeUpdate() {
+    this.get_Token()
+  },
   beforeDestroy() {
     clearInterval(this.timer)
     clearInterval(this.timer2)
@@ -380,7 +383,7 @@ export default {
 }
 .btn_change_page{
   display: flex;
-  margin-left:25%;
+
 
 }
 .port_state_span{
@@ -397,6 +400,8 @@ export default {
 }
 .square_port{
   white-space: nowrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 .Power{
   color: black;
@@ -410,8 +415,8 @@ export default {
 .column_port{
   margin: 10px;
   background-color: #D2691E;
-  width: 180px;
-  height: 200px;
+  min-width: 160px;
+  min-height: 200px;
   justify-content: center;
   align-items: center;
   border-radius: 10px;

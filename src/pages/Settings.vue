@@ -63,28 +63,28 @@
       </v-layout>
     <h1 class="text_settings">For all systems :</h1>
     <v-layout row wrap>
-      <h2 class="text_settings">Modify logging port :</h2>
+      <h2 class="text_settings">Modify logger port :</h2>
       <v-text-field  type="number" class="field_input" clearable color="black" small v-model="new_logport"></v-text-field>
-      <v-btn  class="btn" small @click="modify_logging_port(new_logport)">Change logging port</v-btn>
+      <v-btn  class="btn" small @click="modify_logging_port(new_logport)">Change logger port</v-btn>
       <v-spacer></v-spacer>
     </v-layout>
     <v-snackbar
       color="#D2691E"
       v-model="snackbar_logport"
     >
-      Changing logging ip to {{new_logport}}
+      Changing logger port to {{new_logport}}
     </v-snackbar>
     <v-layout row wrap>
-      <h2 class="text_settings">Modify logging ip :</h2>
+      <h2 class="text_settings">Modify logger ip :</h2>
       <v-text-field  type="number" class="field_input" clearable color="black" small v-model="new_logip"></v-text-field>
-      <v-btn  class="btn" small @click="modify_logging_ip(new_logip)">Change logging ip</v-btn>
+      <v-btn  class="btn" small @click="modify_logging_ip(new_logip)">Change logger IP address </v-btn>
       <v-spacer></v-spacer>
     </v-layout>
     <v-snackbar
       color="#D2691E"
       v-model="snackbar_logip"
     >
-      Changing logging ip to {{new_logip}}
+      Changing logger IP to {{new_logip}}
     </v-snackbar>
 
   </v-container>
@@ -175,6 +175,7 @@ export default {
     },
     change_system(number){
       this.activeSystem = number
+      this.set_location_db()
     },
   },
   data: () => ({

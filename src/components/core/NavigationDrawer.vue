@@ -4,8 +4,8 @@
     fixed app>
     <v-toolbar :color="$root.themeColor" class="toolbar">
       <router-link :to="{ name: 'Pcu' }">
-        <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/thumb/b/bf/Universit%C3%A9_Laval_logo_et_texte.svg/320px-Universit%C3%A9_Laval_logo_et_texte.svg.png?20180209212929" width="
-        160px">
+        <img class="logo" src="static/320px-Université_Laval_logo_et_texte.png" width="
+        120px">
       </router-link>
       <router-link :to="{ name: 'Pcu' }" class="text">
         PCU

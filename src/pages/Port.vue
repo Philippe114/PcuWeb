@@ -543,7 +543,7 @@ export default {
       } else {
         this.Port_state = "ON"
       }
-      this.ReloadPage()
+      await this.ReloadPage()
       this.timer = setInterval(this.ReloadPage, 1000)
   },
 
