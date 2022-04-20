@@ -333,7 +333,7 @@ export default {
       await this.ReloadPage(i)
       await this.get_port_measures(i)
       // await this.get_port_measures_last_hour(i)
-      this.timer = setInterval(this.ReloadPage, 6000,i)
+      this.timer = setInterval(this.ReloadPage, 2000,i)
       this.timer2 = setInterval(this.get_port_measures, 1000,i)
       // this.timer8Ports = setInterval(this.get_port_measures_last_hour, 60000,i)
     }
