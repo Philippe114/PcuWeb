@@ -112,13 +112,13 @@ export default {
     }
   },
   async mounted() {
-    this.set_location_db()
+    await this.set_location_db()
     },
   methods: {
     async set_location_db(){
       const location_db = await Get_db_location(this.PcuList[this.activeSystem].name)
       console.log(location_db)
-      if(location_db === "memory_type.ram"){
+      if(location_db["mem_type"] === "memory_type.ram"){
         this.toggle_db = 0
       }else{
         this.toggle_db = 1
@@ -173,10 +173,11 @@ export default {
         }
         await Change_location_db(db_location, this.token[this.activeSystem], this.PcuList[this.activeSystem].name)
     },
-    change_system(number){
+    async change_system(number) {
       this.activeSystem = number
-      this.set_location_db()
-    },
+      await this.set_location_db()
+      this.$forceUpdate()
+    } ,
   },
   data: () => ({
     token:[],

@@ -6,7 +6,7 @@
         <h1>{{hostname.hostname}}</h1>
       <v-layout row warp class="square_port" justify-center justify-space-around >
         <li class="column_port"  style="list-style-type: none" v-for="item in hostname.PortList" :key="item.id" >
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname.hostname)"  :to="{ name: 'Port' }"  >{{item.label}}</v-btn>
+          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname.hostname);item.dialogChangePage = true"  >{{item.label}}</v-btn>
           <v-dialog
             v-model="item.dialogChangePage"
             max-width="290"
