@@ -15,6 +15,19 @@
         <v-card>
           <v-card-title class="headline">Login</v-card-title>
 
+          <v-checkbox
+            v-model="loginAll"
+            :label="'Login all systems'"
+          ></v-checkbox>
+
+          <v-layout v-if="loginAll === false">
+            <v-btn-toggle class="flex-wrap" mandatory v-model="toggle_system">
+              <v-btn v-for="item in PcuList" :key="item.name" @click="change_system(item.number)">
+                {{item.name}}
+              </v-btn>
+            </v-btn-toggle>
+          </v-layout>
+
           <v-card-text>
            Enter Password:
           <v-text-field small v-model="password">Password</v-text-field>
@@ -71,17 +84,22 @@
 <script>
 
 import {Get_token} from "../../API";
-import snackbar from "../../pages/Snackbar";
+import config from "../../config/hostname.json";
+
 
 export default {
   data() {
     return {
       dialogLogin: false,
       password: "",
-      token: "",
+      token: [],
+      PcuList:[],
       snackbar_false:false,
       snackbar_true:false,
       logged:0,
+      toggle_system:0,
+      activeSystem:0,
+      loginAll:false,
 
       rating: null,
       dialog: false,
@@ -94,121 +112,55 @@ export default {
       error: false,
       showResult: false,
       result: '',
-      items: [
-        {
-          icon: 'account_circle',
-          href: '#',
-          title: 'Profile',
-          click: (e) => {
-          }
-        },
-        {
-          icon: 'settings',
-          href: '#',
-          title: 'Settings',
-          click: () => {
-            const vm = this;
-
-            vm.dialogSettings = true;
-          }
-        },
-        {
-          icon: 'exit_to_app',
-          href: '#',
-          title: 'Log Out',
-          click: () => {
-            const vm = this;
-
-            vm.$router.push({name: 'Login'});
-          }
-        }
-      ],
-      notifications:
-        [
-          {
-            title: 'New mail from Adam Joe',
-            color: 'light-blue',
-            icon: 'email',
-            actionAt: '12 min ago',
-            isActive: true,
-            onClick: () => {
-              const vm = this;
-
-              vm.$router.push({name: 'Mailbox'});
-            }
-          },
-          {
-            title: 'Scheculed meeting',
-            color: 'red',
-            icon: 'calendar_today',
-            actionAt: '46 min ago',
-            isActive: true,
-            onClick: () => {
-              const vm = this;
-
-              vm.$router.push({name: 'Calendar'});
-            }
-          },
-          {
-            title: 'New mail from Github',
-            color: 'light-blue',
-            icon: 'email',
-            isActive: true,
-            timeLabel: '2 hour ago',
-            onClick: () => {
-              const vm = this;
-
-              vm.$router.push({name: 'Mailbox'});
-            }
-          }
-        ],
-      languages: [
-        {name: 'English', languageCode: 'en', path: require('../../assets/flags/en.png')},
-        {name: 'Turkish', languageCode: 'tr', path: require('../../assets/flags/tr.png')},
-        {name: 'French', languageCode: 'fr', path: require('../../assets/flags/fr.png')},
-        {name: 'German', languageCode: 'de', path: require('../../assets/flags/de.png')},
-        {name: 'Japanese', languageCode: 'ja', path: require('../../assets/flags/ja.png')},
-        {name: 'Simplified Chinese', languageCode: 'ch', path: require('../../assets/flags/ch.png')}
-      ]
     }
   },
 
   computed: {
-    selectedLanguageFlag() {
-      const vm = this;
-
-      switch (vm.$i18n.locale) {
-        case 'en':
-          return require('../../assets/flags/en.png');
-        case 'tr':
-          return require('../../assets/flags/tr.png');
-        case 'fr':
-          return require('../../assets/flags/fr.png');
-        case 'de':
-          return require('../../assets/flags/de.png');
-        case 'ja':
-          return require('../../assets/flags/ja.png');
-        case 'ch':
-          return require('../../assets/flags/ch.png');
-      }
-    }
   },
   methods: {
+    async savePasswordAll(password) {
+      for(let i=0; i < config.numberOfSystem; i++) {
+        this.token[i] = await Get_token(password, this.PcuList[i].name)
+        if (this.token[i].status === 401) {
+          this.snackbar_false = true
+          this.logged = 0
+          localStorage.setItem("logged", this.logged)
+        } else {
+          this.snackbar_true = true
+          this.logged = 1
+          let tokenStorage = "token"+i
+          localStorage.setItem(tokenStorage.toString(), this.token[i])
+          localStorage.setItem("logged", this.logged)
+        }
+      }
+    },
     async savePassword(password) {
-      localStorage.setItem("password", password)
-      this.token = await Get_token(this.password)
-      if( this.token.status === 401 ){
+      if(this.loginAll === true){
+        await this.savePasswordAll(password)
+      }
+      else{
+
+      this.token[this.activeSystem] = await Get_token(password, this.PcuList[this.activeSystem].name)
+      if (this.token[this.activeSystem].status === 401) {
         this.snackbar_false = true
         this.logged = 0
         localStorage.setItem("logged", this.logged)
-      }else{
+      } else {
         this.snackbar_true = true
         this.logged = 1
+        let tokenStorage = "token"+this.activeSystem
+        localStorage.setItem(tokenStorage.toString(), this.token[this.activeSystem])
         localStorage.setItem("logged", this.logged)
-        console.log(localStorage.getItem("logged"))
       }
-      this.password=""
-
+      }
+    },
+    setup_hostname(){
+      for(let i=0; i < config.numberOfSystem; i++){
+        this.PcuList[i] = {"name":config.hostnameSystem[i], "number":i}
+      }
+      },
+    change_system(number){
+      this.activeSystem = number
     },
     toggleNavigationBar() {
       const vm = this;
@@ -252,8 +204,8 @@ export default {
     }
   },
   async mounted() {
+    this.setup_hostname()
     this.logged = localStorage.getItem("logged")
-    console.log(this.logged)
     this.$forceUpdate()
   }
 }

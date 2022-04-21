@@ -6,9 +6,7 @@
           <toolbar @toggleNavigationBar="drawer = !drawer"/>
           <navigation :toggle="drawer"/>
           <v-content>
-            <breadcrumbs />
             <router-view/>
-            <page-footer />
           </v-content>
         </div>
       </v-app>
@@ -24,9 +22,11 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
+  components:{
+
+  },
   data() {
     return {
       drawer: true

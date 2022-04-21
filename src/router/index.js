@@ -2,15 +2,9 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import Dashboard from '../pages/Dashboard.vue';
-import Social from '../pages/Social.vue';
-import Media from '../pages/Media.vue';
-import Snackbar from '../pages/Snackbar.vue';
-import Chart from '../pages/Chart.vue';
-import Mailbox from '../pages/Mailbox.vue';
 import Pcu from '../pages/Pcu.vue';
-import Login from '../pages/core/Login.vue';
-import Error from '../pages/core/Error.vue';
 import Port from "../pages/Port";
+import Settings from "../pages/Settings";
 
 
 Vue.use(Router);
@@ -18,7 +12,7 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/Dashboard',
       name: 'Dashboard',
       component: Dashboard,
       meta: {
@@ -28,29 +22,17 @@ export default new Router({
       }
     },
     {
-      path: '/mailbox',
-      name: 'Mailbox',
-      component: Mailbox,
+      path: '/Settings',
+      name: 'Settings',
+      component: Settings,
       meta: {
         breadcrumb: [
-          { name: 'dashboard', href: 'Dashboard' },
-          { name: 'mailbox' }
+          { name: 'settings' }
         ]
       }
     },
     {
-      path: '/snackbar',
-      name: 'Snackbar',
-      component: Snackbar,
-      meta: {
-        breadcrumb: [
-          { name: 'dashboard', href: 'Dashboard' },
-          { name: 'snackbar' }
-        ]
-      }
-    },
-    {
-      path: '/Pcu',
+      path: '/',
       name: 'Pcu',
       component: Pcu,
       meta: {
@@ -58,55 +40,6 @@ export default new Router({
           { name: 'dashboard', href: 'Dashboard' },
           { name: 'PCU' }
         ]
-      }
-    },
-    {
-      path: '/social',
-      name: 'Social',
-      component: Social,
-      meta: {
-        breadcrumb: [
-          { name: 'dashboard', href: 'Dashboard' },
-          { name: 'social' }
-        ]
-      }
-    },
-    {
-      path: '/media',
-      name: 'Media',
-      component: Media,
-      meta: {
-        breadcrumb: [
-          { name: 'dashboard', href: 'Dashboard' },
-          { name: 'media' }
-        ]
-      }
-    },
-    {
-      path: '/chart',
-      name: 'Chart',
-      component: Chart,
-      meta: {
-        breadcrumb: [
-          { name: 'dashboard', href: 'Dashboard' },
-          { name: 'charts' }
-        ]
-      }
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login,
-      meta: {
-        allowAnonymous: true
-      }
-    },
-    {
-      path: '/error',
-      name: 'Error',
-      component: Error,
-      meta: {
-        allowAnonymous: true
       }
     },
     {
