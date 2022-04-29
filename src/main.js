@@ -22,10 +22,6 @@ import Chart from 'chart.js';
 import fullCalendar from 'vue-fullcalendar';
 import { setupComponents } from './config/setup-components';
 
-import { setupAndGetI18n } from './config/setup-i18n';
-
-const i18n = setupAndGetI18n(Vue);
-
 import swatches from 'vue-swatches';
 import "vue-swatches/dist/vue-swatches.min.css"
 
@@ -44,7 +40,6 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  i18n,
   components: { App },
   template: '<App/>',
   data: {

@@ -63,9 +63,9 @@
       </v-layout>
     <h1 class="text_settings">For all systems :</h1>
     <v-layout row wrap>
-      <h2 class="text_settings">Modify logger port :</h2>
+      <h2 class="text_settings">Modify logger's port :</h2>
       <v-text-field  type="number" class="field_input" clearable color="black" small v-model="new_logport"></v-text-field>
-      <v-btn  class="btn" small @click="modifyLoggingPort(new_logport)">Change logger port</v-btn>
+      <v-btn  class="btn" small @click="modifyLoggingPort(new_logport)">Change logger's port</v-btn>
       <v-spacer></v-spacer>
     </v-layout>
     <v-snackbar
@@ -75,9 +75,9 @@
       Changing logger port to {{new_logport}}
     </v-snackbar>
     <v-layout row wrap>
-      <h2 class="text_settings">Modify logger ip :</h2>
+      <h2 class="text_settings">Modify logger's ip :</h2>
       <v-text-field  type="number" class="field_input" clearable color="black" small v-model="new_logip"></v-text-field>
-      <v-btn  class="btn" small @click="modifyLoggingIp(new_logip)">Change logger IP address </v-btn>
+      <v-btn  class="btn" small @click="modifyLoggingIp(new_logip)">Change logger's IP address </v-btn>
       <v-spacer></v-spacer>
     </v-layout>
     <v-snackbar

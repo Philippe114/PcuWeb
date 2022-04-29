@@ -1,5 +1,3 @@
-
-
 ### Reference
 
 * [Vue.js](https://vuejs.org/)
