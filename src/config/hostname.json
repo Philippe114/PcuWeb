@@ -1,4 +1,4 @@
 {
   "numberOfSystem": 1,
-  "hostnameSystem": ["pcu1.local","pcu.local","pcuTest","pcuTest2"]
+  "hostnameSystem": ["pcu.local","pcu.local"]
 }

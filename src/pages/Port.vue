@@ -8,15 +8,15 @@
 
 
   <h1>
-   Port: {{port_number}}
+    Port: {{ portNumber }}
   </h1>
       <h1 class="state">
         Port State:
       </h1>
       <div class="btn_port">
-        <v-btn v-if="Port_state ==='ON'" color="#7CFC00" class="btn_ON" >{{ Port_state }}
+        <v-btn v-if="PortState ==='ON'" color="#7CFC00" class="btn_ON" >{{ PortState }}
         </v-btn>
-        <v-btn v-else-if="Port_state ==='OFF'" color="#FFFFFF" class="btn_OFF" >{{ Port_state }}
+        <v-btn v-else-if="PortState ==='OFF'" color="#FFFFFF" class="btn_OFF" >{{ PortState }}
         </v-btn>
       </div>
       <h1 class="state">
@@ -54,7 +54,7 @@
             <v-btn
               color="green darken-1"
               flat="flat"
-              @click="dialogON = false ; Change_port_state(port_number,'ON')"
+              @click="dialogON = false ; ChangePortState(portNumber,'ON')"
             >
               Yes
             </v-btn>
@@ -87,7 +87,7 @@
             <v-btn
               color="green darken-1"
               flat="flat"
-              @click="dialogOFF = false ; Change_port_state(port_number,'OFF')"
+              @click="dialogOFF = false ; ChangePortState(portNumber,'OFF')"
             >
             Yes
             </v-btn>
@@ -99,30 +99,30 @@
 
 
       <v-flex >
-        <line-chart v-if="Power_checkbox===true" :data="PowervalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}"  :min="0" title="Port Power" ></line-chart>
+        <line-chart v-if="PowerCheckbox===true" :data="PowervalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3}" :min="0" title="Port Power" ></line-chart>
       </v-flex>
 
-      <v-flex   row wrap v-if="get_info===true">
-        <line-chart  v-if="Voltage_checkbox===true" :data="VoltagevalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Voltage [V]" :dataset="{borderWidth: 3}" :min="0"title="Port Voltage"></line-chart>
+      <v-flex   row wrap v-if="getInfo===true">
+        <line-chart v-if="VoltageCheckbox===true" :data="VoltagevalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Voltage [V]" :dataset="{borderWidth: 3}" :min="0" title="Port Voltage"></line-chart>
       </v-flex>
 
-      <v-flex  row wrap v-if="get_info===true">
-        <line-chart  v-if="Current_checkbox===true" :data="CurrentvalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Current [A]" :dataset="{borderWidth: 3}" :min="0" title="Port Current"></line-chart>
+      <v-flex  row wrap v-if="getInfo===true">
+        <line-chart v-if="CurrentCheckbox===true" :data="CurrentvalueChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Current [A]" :dataset="{borderWidth: 3}" :min="0" title="Port Current"></line-chart>
       </v-flex>
 
 
-    <v-flex v-if="get_info===true">
-    <line-chart  v-if="PortChange_checkbox===true" :data="Port_ChangeChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3,showLine:false}" title="Port State Change"></line-chart>
+    <v-flex v-if="getInfo===true">
+    <line-chart v-if="PortChangeCheckbox===true" :data="PortChangeChart" :colors="['#8b47d8']" xtitle="Time" ytitle="Power [W]" :dataset="{borderWidth: 3,showLine:false}" title="Port State Change"></line-chart>
     </v-flex>
 
       <v-layout row wrap>
-      <datetime v-model="start_date">
+      <datetime v-model="startDate">
       <v-menu
         ref="start_menu"
-        v-model="start_menu"
+        v-model="startMenu"
         :close-on-content-click="false"
         :nudge-right="40"
-        :return-value.sync="start_date"
+        :return-value.sync="startDate"
         lazy
         transition="scale-transition"
         offset-y
@@ -131,25 +131,25 @@
       >
         <template v-slot:activator="{ on }">
           <v-text-field
-            v-model="start_date"
+            v-model="startDate"
             label="Start date"
             prepend-icon="event"
             readonly
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker v-model="start_date" no-title scrollable>
+        <v-date-picker v-model="startDate" no-title scrollable>
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="start_menu = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="$refs.start_menu.save(start_date)">OK</v-btn>
+          <v-btn flat color="primary" @click="startMenu = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.start_menu.save(startDate)">OK</v-btn>
         </v-date-picker>
       </v-menu>
       </datetime>
 
       <v-dialog
         ref="dialog1"
-        v-model="start_time"
-        :return-value.sync="start_time_value"
+        v-model="startTime"
+        :return-value.sync="startTimeValue"
         persistent
         lazy
         full-width
@@ -157,7 +157,7 @@
       >
         <template v-slot:activator="{ on }">
           <v-text-field
-            v-model="start_time_value"
+            v-model="startTimeValue"
             label="Start time"
             prepend-icon="access_time"
             readonly
@@ -166,24 +166,24 @@
           ></v-text-field>
         </template>
         <v-time-picker
-          v-if="start_time"
-          v-model="start_time_value"
+          v-if="startTime"
+          v-model="startTimeValue"
           full-width
           width="290px"
         >
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="start_time = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="$refs.dialog1.save(start_time_value)">OK</v-btn>
+          <v-btn flat color="primary" @click="startTime = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.dialog1.save(startTimeValue)">OK</v-btn>
         </v-time-picker>
       </v-dialog>
 
-      <datetime v-model="end_date">
+      <datetime v-model="endDate">
       <v-menu
         ref="end_menu"
-        v-model="end_menu"
+        v-model="endMenu"
         :close-on-content-click="false"
         :nudge-right="40"
-        :return-value.sync="end_date"
+        :return-value.sync="endDate"
         lazy
         transition="scale-transition"
         offset-y
@@ -192,25 +192,25 @@
       >
         <template v-slot:activator="{ on }">
           <v-text-field
-            v-model="end_date"
+            v-model="endDate"
             label="End date"
             prepend-icon="event"
             readonly
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker v-model="end_date" no-title scrollable>
+        <v-date-picker v-model="endDate" no-title scrollable>
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="end_menu = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="$refs.end_menu.save(end_date)">OK</v-btn>
+          <v-btn flat color="primary" @click="endMenu = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.end_menu.save(endDate)">OK</v-btn>
         </v-date-picker>
       </v-menu>
       </datetime>
 
       <v-dialog
         ref="dialog2"
-        v-model="end_time"
-        :return-value.sync="end_time_value"
+        v-model="endTime"
+        :return-value.sync="endTimeValue"
         persistent
         lazy
         full-width
@@ -218,7 +218,7 @@
       >
         <template v-slot:activator="{ on }">
           <v-text-field
-            v-model="end_time_value"
+            v-model="endTimeValue"
             label="End time"
             prepend-icon="access_time"
             readonly
@@ -227,13 +227,13 @@
           ></v-text-field>
         </template>
         <v-time-picker
-          v-if="end_time"
-          v-model="end_time_value"
+          v-if="endTime"
+          v-model="endTimeValue"
           full-width
         >
           <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="end_time = false">Cancel</v-btn>
-          <v-btn flat color="primary" @click="$refs.dialog2.save(end_time_value)">OK</v-btn>
+          <v-btn flat color="primary" @click="endTime = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.dialog2.save(endTimeValue)">OK</v-btn>
         </v-time-picker>
       </v-dialog>
 
@@ -243,34 +243,34 @@
         class="shrink"
       ></v-text-field>
 
-      <v-btn @click="get_port_measures(port_number,start_date,end_date,start_time_value,end_time_value,period)">Get info</v-btn>
-        <v-btn @click="get_port_measures_last_5min(port_number,1)">Last 5 min</v-btn>
-        <v-btn @click="get_port_measures_last_hour(port_number,30)">Last hour</v-btn>
-        <v-btn @click="get_port_measures_last_day(port_number,600)">Last Day</v-btn>
+      <v-btn @click="getPortMeasures(portNumber,startDate,endDate,startTimeValue,endTimeValue,period)">Get info</v-btn>
+        <v-btn @click="getPortMeasuresLast5min(portNumber,1)">Last 5 min</v-btn>
+        <v-btn @click="getPortMeasuresLastHour(portNumber,30)">Last hour</v-btn>
+        <v-btn @click="getPortMeasuresLastDay(portNumber,600)">Last Day</v-btn>
       </v-layout>
 
     <v-layout row wrap>
       <v-checkbox
-        v-model="Power_checkbox"
+        v-model="PowerCheckbox"
         :label="'Power'"
       ></v-checkbox>
       <v-checkbox
-        v-model="Current_checkbox"
+        v-model="CurrentCheckbox"
         :label="'Current'"
       ></v-checkbox>
       <v-checkbox
-        v-model="Voltage_checkbox"
+        v-model="VoltageCheckbox"
         :label="'Voltage'"
       ></v-checkbox>
       <v-checkbox
-        v-model="PortChange_checkbox"
+        v-model="PortChangeCheckbox"
         :label="'Show Change port state'"
       ></v-checkbox>
     </v-layout>
-    <span>Power avg: {{Poweravg}} W</span>
-    <div><span >Power min: {{Powermin}} W</span>
+    <span>Avg power: {{Poweravg}} W</span>
+    <div><span >Min power: {{Powermin}} W</span>
     </div>
-    <div><span>Power max: {{Powermax}} W</span>
+    <div><span>Max power: {{Powermax}} W</span>
     </div>
 
   </v-container>
@@ -295,7 +295,7 @@ export default {
 
   name: "Port",
   methods: {
-    async Change_port_state(port_number,Port_state){
+    async ChangePortState(port_number, Port_state){
       await Change_port_state(this.token,port_number,Port_state,this.hostname)
     },
     onClickBtn(label) {
@@ -307,32 +307,32 @@ export default {
         return label
       }
     },
-    reset_data_graph(){
+    resetDataGraph(){
       this.Powervalue = {}
       this.PowervalueChart = {}
       this.Currentvalue = {}
       this.Voltagevalue = {}
       this.CurrentvalueChart = {}
       this.VoltagevalueChart = {}
-      this.Port_ChangeChart = {}
+      this.PortChangeChart = {}
     },
-    async get_port_measures(port_number, start_date, end_date,start_time,end_time,period) {
-      this.get_info = true
-      this.reset_data_graph()
+    async getPortMeasures(port_number, start_date, end_date, start_time, end_time, period) {
+      this.getInfo = true
+      this.resetDataGraph()
       const start_datetime= start_date+"T"+start_time.toString()+":00.000Z"
       const end_datetime = end_date+"T"+end_time.toString()+":00.000Z"
-      this.Port_Measures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
-      this.Poweravg = (this.Port_Measures["avg_measure"]["power"]+"").slice(0,5)
-      this.Powermin = (this.Port_Measures["min_measure"]["power"]+"").slice(0,5)
-      this.Powermax = (this.Port_Measures["max_measure"]["power"]+"").slice(0,5)
+      this.PortMeasures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Poweravg = (this.PortMeasures["avg_measure"]["power"]+"").slice(0,5)
+      this.Powermin = (this.PortMeasures["min_measure"]["power"]+"").slice(0,5)
+      this.Powermax = (this.PortMeasures["max_measure"]["power"]+"").slice(0,5)
 
-      this.Measures = this.Port_Measures["measures"]
-      this.Date_data = Object.keys(this.Measures)
-      const Date_data_array = this.Date_data
+      this.Measures = this.PortMeasures["measures"]
+      this.DateData = Object.keys(this.Measures)
+      const Date_data_array = this.DateData
       let Date_data_array_update = {}
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
 
-        this.Power = this.Measures[this.Date_data[i]]
+        this.Power = this.Measures[this.DateData[i]]
 
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
@@ -344,47 +344,47 @@ export default {
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
 
         if( i === (Object.keys(this.Measures).length-1)){
-          this.Port_ChangeChart[Date_data_array_update[i]] = null
+          this.PortChangeChart[Date_data_array_update[i]] = null
         }
 
       }
-      this.Port_Change = this.Port_Measures["port_states"]
-      for(let i = 0; i < this.Port_Change.length; i++) {
-        this.Port_ChangeList = (this.Port_Change[i][0])
-        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
-        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
-        this.Port_ChangeValueList = (this.Port_Change[i][1])
-        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+      this.PortChange = this.PortMeasures["port_states"]
+      for(let i = 0; i < this.PortChange.length; i++) {
+        this.PortChangeList = (this.PortChange[i][0])
+        this.PortChangeList =  this.PortChangeList.replace("T",":")
+        this.PortChangeList =  this.PortChangeList.replace("Z","")
+        this.PortChangeValueList = (this.PortChange[i][1])
+        this.PortChangeChart[this.PortChangeList] = this.PortChangeValueList
       }
 
 
       this.$forceUpdate()
     },
-    async get_port_measures_last_hour(port_number,period) {
+    async getPortMeasuresLastHour(port_number, period) {
       this.period = period
-      this.start_date_last_hour = new Date()
-      this.get_info = true
-      this.reset_data_graph()
-      const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
-        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+      this.startDateLastHour = new Date()
+      this.getInfo = true
+      this.resetDataGraph()
+      const end_datetime = (this.startDateLastHour.getFullYear() +"-"+ (this.startDateLastHour.getMonth()+1) +"-"+ this.startDateLastHour.getDate()+"T"+
+        this.startDateLastHour.getHours() + ":" + this.startDateLastHour.getMinutes() +":" +this.startDateLastHour.getSeconds() + ".000Z").toString()
 
-      this.start_date_last_hour.setHours((this.start_date_last_hour.getHours()-1))
-      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
-        (this.start_date_last_hour.getHours()) + ":" + this.start_date_last_hour.getMinutes() + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+      this.startDateLastHour.setHours((this.startDateLastHour.getHours()-1))
+      const start_datetime = (this.startDateLastHour.getFullYear() +"-"+ (this.startDateLastHour.getMonth()+1) +"-"+ this.startDateLastHour.getDate()+"T" +
+        (this.startDateLastHour.getHours()) + ":" + this.startDateLastHour.getMinutes() + ":" +this.startDateLastHour.getSeconds() + ".000Z").toString()
 
 
-      this.Port_Measures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
-      this.Poweravg = (this.Port_Measures["avg_measure"]["power"]+"").slice(0,5)
-      this.Powermin = (this.Port_Measures["min_measure"]["power"]+"").slice(0,5)
-      this.Powermax = (this.Port_Measures["max_measure"]["power"]+"").slice(0,5)
+      this.PortMeasures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Poweravg = (this.PortMeasures["avg_measure"]["power"]+"").slice(0,5)
+      this.Powermin = (this.PortMeasures["min_measure"]["power"]+"").slice(0,5)
+      this.Powermax = (this.PortMeasures["max_measure"]["power"]+"").slice(0,5)
 
-      this.Measures = this.Port_Measures["measures"]
-      this.Date_data = Object.keys(this.Measures)
-      let Date_data_array = this.Date_data
+      this.Measures = this.PortMeasures["measures"]
+      this.DateData = Object.keys(this.Measures)
+      let Date_data_array = this.DateData
       let Date_data_array_update = {}
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
 
-        this.Power = this.Measures[this.Date_data[i]]
+        this.Power = this.Measures[this.DateData[i]]
 
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
@@ -395,44 +395,44 @@ export default {
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
         if( i === (Object.keys(this.Measures).length-1)){
-          this.Port_ChangeChart[Date_data_array_update[i]] = null
+          this.PortChangeChart[Date_data_array_update[i]] = null
         }
       }
 
-      this.Port_Change = this.Port_Measures["port_states"]
-      for(let i = 0; i < this.Port_Change.length; i++) {
-        this.Port_ChangeList = (this.Port_Change[i][0])
-        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
-        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
-        this.Port_ChangeValueList = (this.Port_Change[i][1])
-        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+      this.PortChange = this.PortMeasures["port_states"]
+      for(let i = 0; i < this.PortChange.length; i++) {
+        this.PortChangeList = (this.PortChange[i][0])
+        this.PortChangeList =  this.PortChangeList.replace("T",":")
+        this.PortChangeList =  this.PortChangeList.replace("Z","")
+        this.PortChangeValueList = (this.PortChange[i][1])
+        this.PortChangeChart[this.PortChangeList] = this.PortChangeValueList
       }
 
 
       this.$forceUpdate()
     },
-    async get_port_measures_last_5min(port_number,period) {
+    async getPortMeasuresLast5min(port_number, period) {
       this.period = period
-      this.start_date_last_hour = new Date()
-      this.get_info = true
-      this.reset_data_graph()
-      const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
-        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
-      this.start_date_last_hour.setMinutes((this.start_date_last_hour.getMinutes()-5))
+      this.startDateLastHour = new Date()
+      this.getInfo = true
+      this.resetDataGraph()
+      const end_datetime = (this.startDateLastHour.getFullYear() +"-"+ (this.startDateLastHour.getMonth()+1) +"-"+ this.startDateLastHour.getDate()+"T"+
+        this.startDateLastHour.getHours() + ":" + this.startDateLastHour.getMinutes() +":" +this.startDateLastHour.getSeconds() + ".000Z").toString()
+      this.startDateLastHour.setMinutes((this.startDateLastHour.getMinutes()-5))
 
-      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T" +
-        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
-      this.Port_Measures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
-      this.Poweravg = (this.Port_Measures["avg_measure"]["power"]+"").slice(0,5)
-      this.Powermin = (this.Port_Measures["min_measure"]["power"]+"").slice(0,5)
-      this.Powermax = (this.Port_Measures["max_measure"]["power"]+"").slice(0,5)
+      const start_datetime = (this.startDateLastHour.getFullYear() +"-"+ (this.startDateLastHour.getMonth()+1) +"-"+ this.startDateLastHour.getDate()+"T" +
+        (this.startDateLastHour.getHours()) + ":" + (this.startDateLastHour.getMinutes()) + ":" +this.startDateLastHour.getSeconds() + ".000Z").toString()
+      this.PortMeasures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Poweravg = (this.PortMeasures["avg_measure"]["power"]+"").slice(0,5)
+      this.Powermin = (this.PortMeasures["min_measure"]["power"]+"").slice(0,5)
+      this.Powermax = (this.PortMeasures["max_measure"]["power"]+"").slice(0,5)
 
-      this.Measures = this.Port_Measures["measures"]
-      this.Date_data = Object.keys(this.Measures)
-      let Date_data_array = this.Date_data
+      this.Measures = this.PortMeasures["measures"]
+      this.DateData = Object.keys(this.Measures)
+      let Date_data_array = this.DateData
       let Date_data_array_update = {}
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
-        this.Power = this.Measures[this.Date_data[i]]
+        this.Power = this.Measures[this.DateData[i]]
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
         this.Voltagevalue[Date_data_array[i]] = (this.Power["voltage"])
@@ -442,45 +442,45 @@ export default {
         this.CurrentvalueChart[Date_data_array_update[i]] = this.Currentvalue[Date_data_array[i]]
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
         if( i === (Object.keys(this.Measures).length-1)){
-          this.Port_ChangeChart[Date_data_array_update[i]] = null
+          this.PortChangeChart[Date_data_array_update[i]] = null
         }
 
       }
-      this.Port_Change = this.Port_Measures["port_states"]
-      for(let i = 0; i < this.Port_Change.length; i++) {
-        this.Port_ChangeList = (this.Port_Change[i][0])
-        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
-        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
-        this.Port_ChangeValueList = (this.Port_Change[i][1])
-        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+      this.PortChange = this.PortMeasures["port_states"]
+      for(let i = 0; i < this.PortChange.length; i++) {
+        this.PortChangeList = (this.PortChange[i][0])
+        this.PortChangeList =  this.PortChangeList.replace("T",":")
+        this.PortChangeList =  this.PortChangeList.replace("Z","")
+        this.PortChangeValueList = (this.PortChange[i][1])
+        this.PortChangeChart[this.PortChangeList] = this.PortChangeValueList
       }
 
 
       this.$forceUpdate()
     },
-    async get_port_measures_last_day(port_number,period) {
+    async getPortMeasuresLastDay(port_number, period) {
       this.period = period
-      this.start_date_last_hour = new Date()
-      this.get_info = true
-      this.reset_data_graph()
-      const end_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ this.start_date_last_hour.getDate()+"T"+
-        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() +":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
-      this.start_date_last_hour.setDate((this.start_date_last_hour.getDate()-1))
-      const start_datetime = (this.start_date_last_hour.getFullYear() +"-"+ (this.start_date_last_hour.getMonth()+1) +"-"+ (this.start_date_last_hour.getDate())+"T" +
-        (this.start_date_last_hour.getHours()) + ":" + (this.start_date_last_hour.getMinutes()) + ":" +this.start_date_last_hour.getSeconds() + ".000Z").toString()
+      this.startDateLastHour = new Date()
+      this.getInfo = true
+      this.resetDataGraph()
+      const end_datetime = (this.startDateLastHour.getFullYear() +"-"+ (this.startDateLastHour.getMonth()+1) +"-"+ this.startDateLastHour.getDate()+"T"+
+        this.startDateLastHour.getHours() + ":" + this.startDateLastHour.getMinutes() +":" +this.startDateLastHour.getSeconds() + ".000Z").toString()
+      this.startDateLastHour.setDate((this.startDateLastHour.getDate()-1))
+      const start_datetime = (this.startDateLastHour.getFullYear() +"-"+ (this.startDateLastHour.getMonth()+1) +"-"+ (this.startDateLastHour.getDate())+"T" +
+        (this.startDateLastHour.getHours()) + ":" + (this.startDateLastHour.getMinutes()) + ":" +this.startDateLastHour.getSeconds() + ".000Z").toString()
 
-      this.Port_Measures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
-      this.Poweravg = (this.Port_Measures["avg_measure"]["power"]+"").slice(0,5)
-      this.Powermin = (this.Port_Measures["min_measure"]["power"]+"").slice(0,5)
-      this.Powermax = (this.Port_Measures["max_measure"]["power"]+"").slice(0,5)
+      this.PortMeasures = await Get_port_data_avgMinMax(port_number, start_datetime, end_datetime,period,this.hostname)
+      this.Poweravg = (this.PortMeasures["avg_measure"]["power"]+"").slice(0,5)
+      this.Powermin = (this.PortMeasures["min_measure"]["power"]+"").slice(0,5)
+      this.Powermax = (this.PortMeasures["max_measure"]["power"]+"").slice(0,5)
 
-      this.Measures = this.Port_Measures["measures"]
-      this.Date_data = Object.keys(this.Measures)
-      let Date_data_array = this.Date_data
+      this.Measures = this.PortMeasures["measures"]
+      this.DateData = Object.keys(this.Measures)
+      let Date_data_array = this.DateData
       let Date_data_array_update = {}
       for (let i = 0; i < Object.keys(this.Measures).length; i++) {
 
-        this.Power = this.Measures[this.Date_data[i]]
+        this.Power = this.Measures[this.DateData[i]]
 
         this.Powervalue[Date_data_array[i]] = (this.Power["power"])
         this.Currentvalue[Date_data_array[i]] = (this.Power["current"])
@@ -492,106 +492,95 @@ export default {
         this.VoltagevalueChart[Date_data_array_update[i]] = this.Voltagevalue[Date_data_array[i]]
 
         if( i === (Object.keys(this.Measures).length-1)){
-          this.Port_ChangeChart[Date_data_array_update[i]] = null
+          this.PortChangeChart[Date_data_array_update[i]] = null
         }
       }
-      this.Port_Change = this.Port_Measures["port_states"]
-      for(let i = 0; i < this.Port_Change.length; i++) {
-        this.Port_ChangeList = (this.Port_Change[i][0])
-        this.Port_ChangeList =  this.Port_ChangeList.replace("T",":")
-        this.Port_ChangeList =  this.Port_ChangeList.replace("Z","")
-        this.Port_ChangeValueList = (this.Port_Change[i][1])
-        this.Port_ChangeChart[this.Port_ChangeList] = this.Port_ChangeValueList
+      this.PortChange = this.PortMeasures["port_states"]
+      for(let i = 0; i < this.PortChange.length; i++) {
+        this.PortChangeList = (this.PortChange[i][0])
+        this.PortChangeList =  this.PortChangeList.replace("T",":")
+        this.PortChangeList =  this.PortChangeList.replace("Z","")
+        this.PortChangeValueList = (this.PortChange[i][1])
+        this.PortChangeChart[this.PortChangeList] = this.PortChangeValueList
       }
       this.$forceUpdate()
     },
-    async ReloadPage() {
-      const port_State = await Get_port_state(this.port_number, this.hostname)
+    async reloadPage() {
+      const port_State = await Get_port_state(this.portNumber, this.hostname)
       if(port_State === 1){
-         this.Port_state = "ON"
+         this.PortState = "ON"
       }else{
-         this.Port_state = "OFF"
+         this.PortState = "OFF"
       }
       this.$forceUpdate()
 
     },
-    setup_hostname(){
+    setupHostname(){
       for(let k=0; k < config.numberOfSystem; k++) {
         this.PcuList[k].hostname = config.hostnameSystem[k]
       }
     },
-    get_Token(){
+    getToken(){
         let tokenStorage = "token"+localStorage.getItem("systemActive")
-      console.log(tokenStorage)
         this.token = localStorage.getItem(tokenStorage.toString())
     },
   },
     beforeDestroy() {
-      clearInterval(this.timer)
+      clearInterval(this.timerReloadPage)
     },
   beforeUpdate() {
-    this.get_Token()
+    this.getToken()
   },
 
     async mounted() {
-      this.start_time_value =(this.date.getHours() + ":" + this.date.getMinutes())
-      this.end_time_value = (this.date.getHours() + ":" + this.date.getMinutes())
-      this.Port_state = await Get_port_state(this.port_number,this.hostname)
-      //this.setup_hostname()
-      //console.log(this.PcuList)
-      //for(let i=0; i < config.numberOfSystem; i++){
-        //if( this.hostname === this.PcuList[i].hostname){
-        //  localStorage.setItem("token", this.token[i])
-       // }
-       // }
+      this.startTimeValue =(this.date.getHours() + ":" + this.date.getMinutes())
+      this.endTimeValue = (this.date.getHours() + ":" + this.date.getMinutes())
+      this.PortState = await Get_port_state(this.portNumber,this.hostname)
       this.token =  localStorage.getItem("token")
-      console.log(this.token)
-      if (this.Port_state === 0) {
-        this.Port_state = "OFF"
+      if (this.PortState === 0) {
+        this.PortState = "OFF"
       } else {
-        this.Port_state = "ON"
+        this.PortState = "ON"
       }
-      await this.ReloadPage()
-      this.timer = setInterval(this.ReloadPage, 1000)
+      await this.reloadPage()
+      this.timerReloadPage = setInterval(this.reloadPage, 1000)
   },
 
     data:() =>{
       return {
-        TEST:[{name:"test1", data:{'1':8,'2':6}}, {name:"test2", data:{'1':5,'2':10}
-        }],
         PcuList:[],
         hostname: localStorage.getItem("hostname"),
-        Power_checkbox : true,
+        PowerCheckbox : true,
         token:"",
-        start_date_last_hour: new Date(),
-        Current_checkbox : false,
-        PortChange_checkbox : false,
-        Voltage_checkbox : false,
-        port_number: localStorage.getItem("port_number"),
-        btn_active: localStorage.getItem("btn_active"),
-        Port_state: [],
-        toggle_exclusive: 0,
+        startDateLastHour: new Date(),
+        CurrentCheckbox : false,
+        PortChangeCheckbox : false,
+        VoltageCheckbox : false,
+        portNumber: localStorage.getItem("port_number"),
+        btnActive: localStorage.getItem("btn_active"),
+        PortState: [],
+        toggleExclusive: 0,
         dialogON: false,
         dialogOFF: false,
-        start_date: new Date().toISOString().substr(0, 10),
+        startDate: new Date().toISOString().substr(0, 10),
         date : new Date(),
-        end_date: new Date().toISOString().substr(0, 10),
-        start_menu: false,
-        end_menu: false,
-        start_time:false,
-        start_time_value:null,
-        end_time:false,
-        end_time_value:null,
-        get_info: false,
+        endDate: new Date().toISOString().substr(0, 10),
+        startMenu: false,
+        endMenu: false,
+        startTime:false,
+        startTimeValue:null,
+        endTime:false,
+        endTimeValue:null,
+        getInfo: false,
         Measures: {},
         period:1,
-        Port_Measures: {},
-        Port_Change: {},
-        Port_ChangeChart: {},
-        Port_ChangeList: {},
-        Port_ChangeValueList: {},
-        Date_data: {},
-        timer:"",
+        PortMeasures: {},
+        PortChange: {},
+        PortChangeChart: {},
+        PortChangeList: {},
+        PortChangeValueList: {},
+        DateData: {},
+        timerReloadPage:"",
         Powermin: "",
         Powermax: "",
         Poweravg: "",
