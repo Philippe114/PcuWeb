@@ -57,14 +57,14 @@
 
       <v-snackbar
         color="#D2691E"
-        v-model="snackbar_false"
+        v-model="snackbarFalse"
       >
         Wrong password
           <v-btn
             color="white"
             flat
             x-small
-            @click="snackbar_false = false"
+            @click="snackbarFalse = false"
           >
             Close
           </v-btn>
@@ -72,7 +72,7 @@
 
       <v-snackbar
         color="#D2691E"
-        v-model="snackbar_true"
+        v-model="snackbarTrue"
         :timeout=2000
       >
         Connected
@@ -94,8 +94,8 @@ export default {
       password: "",
       token: [],
       PcuList:[],
-      snackbar_false:false,
-      snackbar_true:false,
+      snackbarFalse:false,
+      snackbarTrue:false,
       logged:0,
       toggle_system:0,
       activeSystem:0,
@@ -122,11 +122,11 @@ export default {
       for(let i=0; i < config.numberOfSystem; i++) {
         this.token[i] = await Get_token(password, this.PcuList[i].name)
         if (this.token[i].status === 401) {
-          this.snackbar_false = true
+          this.snackbarFalse = true
           this.logged = 0
           localStorage.setItem("logged", this.logged)
         } else {
-          this.snackbar_true = true
+          this.snackbarTrue = true
           this.logged = 1
           let tokenStorage = "token"+i
           localStorage.setItem(tokenStorage.toString(), this.token[i])
@@ -142,11 +142,11 @@ export default {
 
       this.token[this.activeSystem] = await Get_token(password, this.PcuList[this.activeSystem].name)
       if (this.token[this.activeSystem].status === 401) {
-        this.snackbar_false = true
+        this.snackbarFalse = true
         this.logged = 0
         localStorage.setItem("logged", this.logged)
       } else {
-        this.snackbar_true = true
+        this.snackbarTrue = true
         this.logged = 1
         let tokenStorage = "token"+this.activeSystem
         localStorage.setItem(tokenStorage.toString(), this.token[this.activeSystem])
@@ -196,12 +196,6 @@ export default {
 
       vm.dialogSettings = false;
     },
-
-    selectLanguage(code) {
-      const vm = this;
-
-      vm.$root.setLanguage(code);
-    }
   },
   async mounted() {
     this.setup_hostname()

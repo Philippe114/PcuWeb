@@ -2,11 +2,11 @@
   <div>
     <v-container>
 
-      <v-container  v-for="hostname in PcuList" :key="hostname.id">
-        <h1>{{hostname.hostname}}</h1>
+      <v-container  v-for="system in PcuList" :key="system.id">
+        <h1>{{system.hostname}}</h1>
       <v-layout row warp class="square_port" justify-center justify-space-around >
-        <li class="column_port"  style="list-style-type: none" v-for="item in hostname.PortList" :key="item.id" >
-          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.Port_State, hostname.hostname)"  :to="{ name: 'Port' }"  >{{item.label}}</v-btn>
+        <li class="column_port"  style="list-style-type: none" v-for="item in system.PortList" :key="item.id" >
+          <v-btn class="btn_change_page" flat @click.native="onClickPort(item.label,item.PortState, system.hostname);item.dialogChangePage = true"  >{{item.label}}</v-btn>
           <v-dialog
             v-model="item.dialogChangePage"
             max-width="290"
@@ -43,9 +43,9 @@
 
           <div class="btn_toggle">
             <Span class="port_state_span" >Port State:</Span>
-            <v-btn v-if="item.Port_State ==='ON'" color="#7CFC00" class="btn_ON" flat>{{ item.Port_State }}
+            <v-btn v-if="item.PortState ==='ON'" color="#7CFC00" class="btn_ON" flat>{{ item.PortState }}
             </v-btn>
-            <v-btn v-else-if="item.Port_State ==='OFF'" color="#000000" class="btn_OFF" flat >{{ item.Port_State }}
+            <v-btn v-else-if="item.PortState ==='OFF'" color="#000000" class="btn_OFF" flat >{{ item.PortState }}
             </v-btn>
           </div>
           <div class="btn_toggle">
@@ -80,7 +80,7 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogON = false ;Change_port_state1(item.label,'ON',hostname.hostname);"
+                  @click="item.dialogON = false ;changePortState(item.label,'ON',system.hostname);"
                 >
                   Yes
                 </v-btn>
@@ -113,19 +113,19 @@
                 <v-btn
                   color="green darken-1"
                   flat="flat"
-                  @click="item.dialogOFF = false ; Change_port_state1(item.label,'OFF',hostname.hostname);"
+                  @click="item.dialogOFF = false ; changePortState(item.label,'OFF',system.hostname);"
                 >
                   Yes
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <span class="Power">Power avg: {{item.PowerAvg}} W</span>
+          <span class="Power">Avg power: {{item.PowerAvg}} W</span>
         </li>
 
         <v-snackbar
           color="#D2691E"
-          v-model="snackbar_notconnected"
+          v-model="snackbarNotConnected"
         >
           Not connected
         </v-snackbar>
@@ -160,22 +160,22 @@ export default {
 
     ],
     PortList:[
-      {id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF', PowerAvg:0},
-      {id:('Port 1'), label: 'Port 1', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-      {id:('Port 2'), label: 'Port 2', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-      {id:('Port 3'), label: 'Port 3', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-      {id:('Port 4'), label: 'Port 4', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-      {id:('Port 5'), label: 'Port 5', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-      {id:('Port 6'), label: 'Port 6', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-      {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0}
+      {id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, PortState:'OFF', PowerAvg:0},
+      {id:('Port 1'), label: 'Port 1', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+      {id:('Port 2'), label: 'Port 2', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+      {id:('Port 3'), label: 'Port 3', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+      {id:('Port 4'), label: 'Port 4', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+      {id:('Port 5'), label: 'Port 5', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+      {id:('Port 6'), label: 'Port 6', dialogON:false, dialogOFF:false, dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+      {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, PortState:'OFF',PowerAvg:0}
     ],
-    snackbar_notconnected:false,
-    timer: '',
-    timer2: '',
+    snackbarNotConnected:false,
+    timerReloadPage: '',
+    timerGetPortMeasures: '',
     timer8Ports: '',
     timerGetToken:'',
     Measures: {},
-    Port_Measures: {},
+    PortMeasures: {},
     Date_data: {},
     Powermin: "",
     Powermax: "",
@@ -195,8 +195,7 @@ export default {
   methods: {
 
     //Function to change the port state. Need the token from login to work.
-    async Change_port_state1(Port_number, Port_state, hostname) {
-      console.log(hostname)
+    async changePortState(Port_number, Port_state, hostname) {
       for(let i=0; i < config.numberOfSystem; i++){
         if(hostname === this.PcuList[i].hostname){
           let port_number = parseInt(Port_number.substr(4, 5))
@@ -223,52 +222,53 @@ export default {
         localStorage.setItem("btn_active", "ON")
       }
     },
-    cancelAutoUpdate() {
-      clearInterval(this.timer);
-    },
-    async ReloadPage(k) {
+
+    //Thi function reload the state of the port
+    async reloadPage(k) {
       for (let i = 0; i < 8; i++) {
-        this.PcuList[k].PortList[i].Port_State = await Get_port_state(i, this.PcuList[k].hostname)
-        if (this.PcuList[k].PortList[i].Port_State === 0) {
-          this.PcuList[k].PortList[i].Port_State = "OFF"
+        this.PcuList[k].PortList[i].PortState = await Get_port_state(i, this.PcuList[k].hostname)
+        if (this.PcuList[k].PortList[i].PortState === 0) {
+          this.PcuList[k].PortList[i].PortState = "OFF"
         } else {
-          this.PcuList[k].PortList[i].Port_State = "ON"
+          this.PcuList[k].PortList[i].PortState = "ON"
         }
       }
 
     this.$forceUpdate()
     },
 
-    async get_port_measures(hostname_number) {
-      this.Port_Measures = await Get_port_instant(this.PcuList[hostname_number].hostname)
-      this.PcuList[hostname_number].PortList[0].PowerAvg = this.Port_Measures.port_0.port_power
-      this.PcuList[hostname_number].PortList[1].PowerAvg = this.Port_Measures.port_1.port_power
-      this.PcuList[hostname_number].PortList[2].PowerAvg = this.Port_Measures.port_2.port_power
-      this.PcuList[hostname_number].PortList[3].PowerAvg = this.Port_Measures.port_3.port_power
-      this.PcuList[hostname_number].PortList[4].PowerAvg = this.Port_Measures.port_4.port_power
-      this.PcuList[hostname_number].PortList[5].PowerAvg = this.Port_Measures.port_5.port_power
-      this.PcuList[hostname_number].PortList[6].PowerAvg = this.Port_Measures.port_6.port_power
-      this.PcuList[hostname_number].PortList[7].PowerAvg = this.Port_Measures.port_7.port_power
+    async getPortMeasures(hostname_number) {
+      this.PortMeasures = await Get_port_instant(this.PcuList[hostname_number].hostname)
+      this.PcuList[hostname_number].PortList[0].PowerAvg = this.PortMeasures.port_0.port_power
+      this.PcuList[hostname_number].PortList[1].PowerAvg = this.PortMeasures.port_1.port_power
+      this.PcuList[hostname_number].PortList[2].PowerAvg = this.PortMeasures.port_2.port_power
+      this.PcuList[hostname_number].PortList[3].PowerAvg = this.PortMeasures.port_3.port_power
+      this.PcuList[hostname_number].PortList[4].PowerAvg = this.PortMeasures.port_4.port_power
+      this.PcuList[hostname_number].PortList[5].PowerAvg = this.PortMeasures.port_5.port_power
+      this.PcuList[hostname_number].PortList[6].PowerAvg = this.PortMeasures.port_6.port_power
+      this.PcuList[hostname_number].PortList[7].PowerAvg = this.PortMeasures.port_7.port_power
 
       for (let i = 0; i < 8; i++) {
         this.PcuList[hostname_number].PortList[i].PowerAvg = this.PcuList[hostname_number].PortList[i].PowerAvg.toPrecision(4)
       }
       this.$forceUpdate()
     },
-    reset_data_graph(){
+    resetDataGraph(){
       this.Powervalue = {}
       this.PowervalueChart = {}
     },
-    async get_port_measures_last_hour(hostname_number) {
-      this.start_date_last_hour = new Date()
-      this.get_info = true
-      this.reset_data_graph()
-      const end_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
-        this.start_date_last_hour.getHours() + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
 
-      this.start_date_last_hour.setHours((this.start_date_last_hour.getHours() - 1))
-      const start_datetime = (this.start_date_last_hour.getFullYear() + "-" + (this.start_date_last_hour.getMonth() + 1) + "-" + this.start_date_last_hour.getDate() + "T" +
-        (this.start_date_last_hour.getHours()) + ":" + this.start_date_last_hour.getMinutes() + ":" + this.start_date_last_hour.getSeconds() + ".000Z").toString()
+    //Function to get values for a graph
+    async getPortMeasuresLastHour(hostname_number) {
+      this.startDateLastHour = new Date()
+      this.getInfo = true
+      this.resetDataGraph()
+      const end_datetime = (this.startDateLastHour.getFullYear() + "-" + (this.startDateLastHour.getMonth() + 1) + "-" + this.startDateLastHour.getDate() + "T" +
+        this.startDateLastHour.getHours() + ":" + this.startDateLastHour.getMinutes() + ":" + this.startDateLastHour.getSeconds() + ".000Z").toString()
+
+      this.startDateLastHour.setHours((this.startDateLastHour.getHours() - 1))
+      const start_datetime = (this.startDateLastHour.getFullYear() + "-" + (this.startDateLastHour.getMonth() + 1) + "-" + this.startDateLastHour.getDate() + "T" +
+        (this.startDateLastHour.getHours()) + ":" + this.startDateLastHour.getMinutes() + ":" + this.startDateLastHour.getSeconds() + ".000Z").toString()
 
       for (let k = 0; k < 8; k++) {
         this.Measures = {}
@@ -290,52 +290,44 @@ export default {
     this.$forceUpdate()
     },
     //Get the token for the api
-    get_Token(){
+    getToken(){
       for(let i=0; i < config.numberOfSystem; i++){
         let tokenStorage = "token"+i
         this.token[i] = localStorage.getItem(tokenStorage.toString())
-        //if(this.token[0] === null){
-          //this.snackbar_notconnected = true
-          //this.timerGetToken = setTimeout(this.get_Token, 2000)
-        //}else{
-        //}
       }
     },
     //For multiple system
-    setup_hostname(){
+    setupHostname(){
       for(let k=0; k < config.numberOfSystem; k++) {
-        const PortListTemp = {hostname:"", hostname_number:k,PortList:[{id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF', PowerAvg:0},
-            {id:('Port 1'), label: 'Port 1', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-            {id:('Port 2'), label: 'Port 2', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-            {id:('Port 3'), label: 'Port 3', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-            {id:('Port 4'), label: 'Port 4', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-            {id:('Port 5'), label: 'Port 5', dialogON:false, dialogOFF:false,dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-            {id:('Port 6'), label: 'Port 6', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0},
-            {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, Port_State:'OFF',PowerAvg:0}]}
+        const PortListTemp = {hostname:"", hostname_number:k,PortList:[{id:('Port 0'), label: 'Port 0', dialogON:false, dialogOFF:false, dialogChangePage:false, PortState:'OFF', PowerAvg:0},
+            {id:('Port 1'), label: 'Port 1', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+            {id:('Port 2'), label: 'Port 2', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+            {id:('Port 3'), label: 'Port 3', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+            {id:('Port 4'), label: 'Port 4', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+            {id:('Port 5'), label: 'Port 5', dialogON:false, dialogOFF:false,dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+            {id:('Port 6'), label: 'Port 6', dialogON:false, dialogOFF:false, dialogChangePage:false, PortState:'OFF',PowerAvg:0},
+            {id:('Port 7'), label: 'Port 7', dialogON:false, dialogOFF:false, dialogChangePage:false, PortState:'OFF',PowerAvg:0}]}
         this.PcuList.push(PortListTemp)
         this.PcuList[k].hostname = config.hostnameSystem[k]
       }
     },
   },
   beforeUpdate() {
-    this.get_Token()
+    this.getToken()
   },
   beforeDestroy() {
-    clearInterval(this.timer)
-    clearInterval(this.timer2)
     clearInterval(this.timer8Ports)
-    this.cancelAutoUpdate();
+    clearInterval(this.timerReloadPage)
+    clearInterval(this.timerGetPortMeasures)
   },
   async mounted() {
-    await this.setup_hostname()
-    this.get_Token()
+    await this.setupHostname()
+    this.getToken()
     for(let i=0; i < config.numberOfSystem; i++){
-      await this.ReloadPage(i)
-      await this.get_port_measures(i)
-      // await this.get_port_measures_last_hour(i)
-      this.timer = setInterval(this.ReloadPage, 2000,i)
-      this.timer2 = setInterval(this.get_port_measures, 1000,i)
-      // this.timer8Ports = setInterval(this.get_port_measures_last_hour, 60000,i)
+      await this.reloadPage(i)
+      await this.getPortMeasures(i)
+      this.timerReloadPage = setInterval(this.reloadPage, 2000,i)
+      this.timerGetPortMeasures = setInterval(this.getPortMeasures, 1000,i)
     }
     this.$forceUpdate()
   },
@@ -344,14 +336,7 @@ export default {
 </script>
 
 <style>
-.ON{
-  background: #7CFC00 !important;
-  opacity: 1 !important;
-  min-width: 44px !important;
-  display: flex !important;
-  justify-content: center !important;
 
-}
 .btn_toggle{
   display: flex;
   width: 10px ;
@@ -384,8 +369,9 @@ export default {
 }
 .btn_change_page{
   display: flex;
-
-
+  align-items: center;
+  justify-content: center;
+  margin-left:22%;
 }
 .port_state_span{
   margin-top: 5px;

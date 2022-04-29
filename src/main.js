@@ -53,21 +53,5 @@ new Vue({
     userPassword: '123456'
   },
 
-  methods: {
-    setLanguage(language) {
-      const vm = this;
-
-      localStorage.setItem('language', language);
-
-      document.documentElement.lang = language;
-
-      vm.$i18n.locale = language;
-
-      vm.$vuetify.lang.current = language;
-    },
-  },
-  created() {
-    const vm = this;
-    vm.setLanguage('en');
-  },
+  methods: {}
 })

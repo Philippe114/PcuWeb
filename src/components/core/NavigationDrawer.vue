@@ -4,8 +4,7 @@
     fixed app>
     <v-toolbar :color="$root.themeColor" class="toolbar">
       <router-link :to="{ name: 'Pcu' }">
-        <img class="logo" src="static/320px-Université_Laval_logo_et_texte.png" width="
-        120px">
+        <img class="logo" src="static/320px-Université_Laval_logo_et_texte.png" width="120px">
       </router-link>
       <router-link :to="{ name: 'Pcu' }" class="text">
         PCU
@@ -75,13 +74,5 @@ export default {
   .item-title {
     font-size: 17px;
     font-weight: 500;
-  }
-  .item-sub-title {
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  .active {
-    font-weight: bold;
   }
 </style>

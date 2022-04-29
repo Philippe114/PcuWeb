@@ -6,7 +6,6 @@ export const Get_token = async function(password,hostname) {
       method: "GET",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
       },
@@ -26,7 +25,6 @@ export const Modify_password = async function(password,token,hostname) {
       method: "PUT",
       crossDomain: true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         Authorization: token,
@@ -44,7 +42,6 @@ export const Modify_reference_voltage = async function(reference_voltage,token,h
       method: "PUT",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
         Authorization :token,
@@ -64,7 +61,6 @@ console.log(mem_type)
   method: "PUT",
   crossDomain:true,
   headers: {
-  "Origin": "http://localhost:8080",
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin":"*",
   Authorization :token,
@@ -83,7 +79,6 @@ export const Modify_logging_port = async function(logging_port,token,hostname) {
       method: "PUT",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
         Authorization :token,
@@ -102,7 +97,6 @@ export const Modify_logging_ip = async function(logging_ip,token,hostname) {
       method: "PUT",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
         Authorization :token,
@@ -120,7 +114,6 @@ export const Reboot_rpi = async function(token,hostname) {
       method: "PUT",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
         Authorization :token,
@@ -144,7 +137,6 @@ export const Get_port_max = async function(Port_number,start_datetime,end_dateti
       method: "GET",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
       },
@@ -165,7 +157,6 @@ export const Get_port_min = async function(Port_number,start_datetime,end_dateti
       method: "GET",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
       }
@@ -186,7 +177,6 @@ export const Get_port_data = async function (Port_number,start_datetime,end_date
       method: "GET",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
       },
@@ -207,7 +197,6 @@ export const Get_port_data_avgMinMax = async function (Port_number,start_datetim
       method: "GET",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
       },
@@ -228,7 +217,6 @@ export const Get_port_avg = async function (Port_number,start_datetime,end_datet
       method: "GET",
       crossDomain: true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       }
@@ -249,7 +237,6 @@ export const Get_port_change = async function(Port_number,start_datetime,end_dat
       method: "GET",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
       },
@@ -274,7 +261,6 @@ export const Get_port_state = async function (Port_number,hostname) {
       method: "GET",
       crossDomain: true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
@@ -301,7 +287,6 @@ export const Change_port_state =  async function(token,Port_number, Port_state,h
       method: "PUT",
       crossDomain:true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin":"*",
         Authorization :token,
@@ -322,7 +307,6 @@ export const Get_port_instant = async function (hostname) {
       method: "GET",
       crossDomain: true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
@@ -338,7 +322,6 @@ export const Get_db_location = async function (hostname) {
       method: "GET",
       crossDomain: true,
       headers: {
-        "Origin": "http://localhost:8080",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
